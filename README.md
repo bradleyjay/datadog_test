@@ -1,4 +1,4 @@
 # markdownFormatTest
 
-![Image of our Fearless Leader]
-(https://github.com/bradleyjay/markdownFormatTest/tree/master/images/tormund.jpeg)
+![Image of our Fearless Leader](/images/tormund.jpeg)
+Format: ![Alt Text](url)
