@@ -2,7 +2,8 @@ Your answers to the questions go here.
 
 # Datadog Coding Challenge - Bradley Shields
 
-###Format Testing - Embedding Images:
+## Workspace Prep Work: Setup
+### Format Testing - Embedding Images:
 
 I wanted to be sure I knew how to embed my screenshots, and that the formatting would be correct. I created the repository datadog_test (https://github.com/bradleyjay/datadog_test), and tried two methods from github's "Mastering Markdown" [guide.](https://guides.github.com/features/mastering-markdown/)
 
@@ -24,5 +25,14 @@ Check complete! There's our fearless leader, Tormund Giantsbane (ginger beards o
 *Note: on macOS, to screenshot, use Shift+CMD+4*
 
 
+### Virtual Environment
 
+Followed the [guide](https://www.vagrantup.com/intro/getting-started/) to setting up a Vagrant VM project
+- Downloaded and installed [Vagrant](https://www.vagrantup.com/downloads.html) 2.1.2 for macOS.
+- Per Vagrant's recommendation, updated my VirtualBox [VirtualBox](https://www.virtualbox.org/wiki/Downloads) install to 5.2.18 for macOS. 
+
+Then, I started the VM via
+
+    vagrant init hashicorp/precise64
+    vagrant up 
 
