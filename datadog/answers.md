@@ -8,13 +8,14 @@ I wanted to be sure I knew how to embed my screenshots, and that the formatting 
 
 1. Absolute github path
 
-![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
-That's not necessarily a static URL. Depending on the branch referenced, that URL grows to include the branch name, and "tree". That's risky as things change in the repo.
+```![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)``` 
+
+Works, but that's not necessarily a static URL. Depending on the branch referenced, that URL grows to include the branch name, and "tree". That's risky as things change in the repo.
 
 2. Relative github path
 
-![GitHub Logo](/images/logo.png)
-Format: ![Alt Text](url)
+``` ![GitHub Logo](/images/tormund.jpg)```
+
 
 In this case, a relative path works better because it moves with the README.md in a given branch, which in this case is where I'm embedding the image.
 
