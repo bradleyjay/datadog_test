@@ -92,6 +92,12 @@ I attempted to use **vi** to open the datadog.yaml, but was denied due to permis
     # Set the host's tags (optional)
         tags: machine_name: VagrantVM_Ubuntu1604LTS, region:eastus, env:prod, role:database
 
+*Aside: I notice this mistake later, that there's an extra space between *machine_name:* and *VagrantVM_Ubuntu1604LTS* When I see the Hostmap in the next step, I do immediately notice that my custom tags aren't there, but decided that there may be another later step that updates the Host's info after some investigating. After setting up my MySQL integration in the next part of "Collecting Metrics," I realize that's not the case when more information is missing. There's more explanation at that point in this document, as you'll see. I came back to replace the two lines with:*
+
+    # Set the host's tags (optional)
+        tags: machine_name:VagrantVM_Ubuntu1604LTS, region:eastus, env:prod, role:database 
+
+
 ###### Step 3: Find Hostmap in Datadog, provide screenshot
 Back in the browser walk-through for setting up Datadog, from my notes on the Datadog 101 - 1 - Overview [video](https://www.youtube.com/watch?v=uI3YN_cnahk) the Hostmap should be in the Sidebar menu. From **Infrastructure > Hostmap**, 
 
