@@ -1,10 +1,12 @@
-Your answers to the questions go here.
-
 # Datadog Coding Challenge - Bradley Shields
+
+Hello Datadog, here is my livedoc created while completing the Coding Challenge. The first section covers my initial test for markdown and image embedding, the answers begin at "Prerequisites - Setup the Environment." 
+
+Thank you for the opportunity to interview, I hope to speak with you soon.
 
 ## Format Testing - Embedding Images:
 
-To be sure I knew how to embed my screenshots, and that the formatting would be correct, I created the repository [datadog_test](https://github.com/bradleyjay/datadog_test). I tried two methods to embed images from github's "Mastering Markdown" [guide.](https://guides.github.com/features/mastering-markdown/)
+To be sure I knew how to embed my screenshots, and that my markdown formatting displayed as I expected, I created the repository [datadog_test](https://github.com/bradleyjay/datadog_test). I tried two methods to embed images from github's "Mastering Markdown" [guide.](https://guides.github.com/features/mastering-markdown/)
 
 1. Absolute github path
 
@@ -26,7 +28,7 @@ Check complete! There's our fearless leader, Tormund Giantsbane (ginger beards o
 *Note: on macOS, to screenshot, use Shift+CMD+4*
 
 
-## Prerequisites - Setup the Enviornment
+## Prerequisites - Setup the Environment
 
 #### Initial VM Install and Launch
 
@@ -83,14 +85,44 @@ Now, the assignment.
 At this point, I went to the Datadog [overview](https://docs.datadoghq.com/) documentation, and opened up the Agent section. Selecting [Ubuntu](https://docs.datadoghq.com/agent/basic_agent_usage/ubuntu/) and reading down the page, the Agent config file location is listed. Looking through the Datadog Agent Installer output in my VM terminal window, I could see Agent V6 was installed, not V5. The Agent config file is therefore located at ```/etc/datadog-agent/datadog.yaml```.
 
 ###### Step 2: Add tags to the config file.
-I tried to use **vi** to open the datadog.yaml, but was denied permissions. **Sudo** let me through. Using **/tags** to find the section on tags, and after checking where else the term *tags* showed up, I uncommented the following:
+By searching the Datadog Docs documentation for **tags**, I found an [article](https://docs.datadoghq.com/tagging/assigning_tags/) on assigning tags. ["Getting Started With Tags"](https://docs.datadoghq.com/tagging/#tags-best-practices) had some recommendations for useful tags and notes on formatting.
 
-     tags:
-       - mytag
-       - env:prod
-       - role:database
+I attempted to use **vi** to open the datadog.yaml, but was denied due to permissions. **Sudo** let me through. Using **/tags** to find the section on tags, I set the following:
+
+    # Set the host's tags (optional)
+        tags: machine_name: VagrantVM_Ubuntu1604LTS, region:eastus, env:prod, role:database
 
 ###### Step 3: Find Hostmap in Datadog, provide screenshot
 Back in the browser walk-through for setting up Datadog, from my notes on the Datadog 101 - 1 - Overview [video](https://www.youtube.com/watch?v=uI3YN_cnahk) the Hostmap should be in the Sidebar menu. From **Infrastructure > Hostmap**, 
 
-![Hostmap with VM, tags](images/1_CollectingMetrics_Pt1.png)
+![Hostmap with VM, tags](images/1_1_Hostmap.png)
+
+** Install a database on your machine (MongoDB, MySQL, or PostgreSQL) and then install the respective Datadog integration for that database.** 
+
+###### Step 1: Install a database (MySQL)
+
+Following the Debian/Ubuntu apt-get install workflow [guide](https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/#apt-repo-fresh-install), I installed via ```sudo apt-get install mysql-server```, and left the root password blank. Of course, that's not secure, but for the proof of concept we're doing here, simplicity seemed wise. I found this [guide](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-16-04) useful as well.
+
+I confirmed the SQL server was running via ```systemctl status mysql.service```. The second check to make sure MySQL was running **and** user accessible, done by a version check via ```mysqladmin -p -u root version```
+
+    vagrant@ubuntu-xenial:~$ mysqladmin -u root version
+    mysqladmin: connect to server at 'localhost' failed
+    error: 'Access denied for user 'root'@'localhost''
+
+I've seen this before - it's related to the default auth_socket plugin (MySQL does this on macOS too). This [Stack Overflow](https://stackoverflow.com/questions/39281594/error-1698-28000-access-denied-for-user-rootlocalhost) helped resolve the issue. The user root is using the **auth_socket** plugin by default, as below:
+
+![Auth_Socket](/images/1_2_AuthSocketSQL)
+
+The solution is to grant permissions to the user and use sql that way (i.e., as vagrant@ubuntu-xenial). So, after doing that:
+
+    vagrant@ubuntu-xenial:~$ sudo mysql -u root
+    mysql> USE mysql
+    mysql> CREATE USER 'vagrant'@'localhost' IDENTIFIED BY '';
+    mysql> GRANT ALL PRIVILEGES ON *.* TO 'vagrant'@'localhost';
+    mysql> UPDATE user SET plugin='auth_socket' WHERE User='vagrant';
+    mysql> FLUSH PRIVILEGES;
+    sudo service mysql restart
+
+Then, ```mysqladmin -u vagrant version``` correctly outputs the version, indicating that our MySQL service is up, running, and user accessible. ```mysql -u vagrant``` can now get us to the MySQL monitor to interact with our MySQL service as necessary.
+
+### NOW, install user integration 
