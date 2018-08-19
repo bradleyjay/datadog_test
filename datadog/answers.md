@@ -19,7 +19,7 @@ This works, but that's not necessarily a static URL. Depending on the branch ref
 
 In this case, a relative path works better because it moves with the README.md in a given branch, which in this case is where I'm embedding the image. And so,
 
-[Tormund Giantsbane](/images/tormund.jpeg)
+![Tormund Giantsbane](/images/tormund.jpg)
 
 Check complete! There's our fearless leader, Tormund Giantsbane (ginger beards of the world, unite!) Now, to set up the enviornment for the Coding Challenge.
 
