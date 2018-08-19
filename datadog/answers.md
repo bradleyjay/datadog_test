@@ -17,7 +17,9 @@ This works, but that's not necessarily a static URL. Depending on the branch ref
 ``` ![GitHub Logo](/images/tormund.jpg)```
 
 
-In this case, a relative path works better because it moves with the README.md in a given branch, which in this case is where I'm embedding the image.
+In this case, a relative path works better because it moves with the README.md in a given branch, which in this case is where I'm embedding the image. And so,
+
+[Tormund Giantsbane](/images/tormund.jpg)
 
 Check complete! There's our fearless leader, Tormund Giantsbane (ginger beards of the world, unite!) Now, to set up the enviornment for the Coding Challenge.
 
@@ -49,9 +51,9 @@ Vagrant base images are called "boxes," and cloning one is how a VirtualBox envi
        config.vm.box = "ubuntu/xenial64"
     end
 
- gave me access to this box. I then commented out the previous ```config.vm.box``` line for to deselect Ubuntu 12.04 LTS. This version of the virtual box was already running, so a ```vagrant destroy``` was used to remove that instance of the virtual machine. 
+ gave me access to this box. I then commented out the previous ```config.vm.box``` line to deselect Ubuntu 12.04 LTS. This version of the virtual box was already running, so a ```vagrant destroy``` was used to remove that instance of the virtual machine. 
 
- I then ran a ```vagrant up```, which downloaded the new 16.04 LTS box and started our new server. Finally, ```vagrant ssh``` brought me into the new version of the box. Upon launch, there is a message about Ubuntu 18.04.1 LTS being available, but for now I'll use this version unless I find stability or dependency issues. The Ubuntu 16.04 LTS box has *many* more downloads, so the odds seem good that it's a stable release, despite being a daily build.
+ I then ran a ```vagrant up```, which downloaded the new 16.04 LTS box and started our new server. Finally, ```vagrant ssh``` brought me into the new version of the box. Upon launch, there is a message about Ubuntu 18.04.1 LTS being available, but I wanted to use 16.04 LTS unless I find stability or dependency issues. The Ubuntu 16.04 LTS box has *many* more downloads, so the odds seem good that it's a stable release, despite being a daily build.
 
 
 #### Datadog Agent Setup
@@ -75,8 +77,20 @@ After a number of get, unpack, and install calls, the Datadog Agent reported it 
 
 Now, the assignment.
 
-1. **Add tags in the Agent config file and show us a screenshot of your host and its tags on the Host Map page in Datadog.**
+**Add tags in the Agent config file and show us a screenshot of your host and its tags on the Host Map page in Datadog.**
 
-#### Step 1: Find the Agent config file
+###### Step 1: Find the Agent config file
 At this point, I went to the Datadog [overview](https://docs.datadoghq.com/) documentation, and opened up the Agent section. Selecting [Ubuntu](https://docs.datadoghq.com/agent/basic_agent_usage/ubuntu/) and reading down the page, the Agent config file location is listed. Looking through the Datadog Agent Installer output in my VM terminal window, I could see Agent V6 was installed, not V5. The Agent config file is therefore located at ```/etc/datadog-agent/datadog.yaml```.
 
+###### Step 2: Add tags to the config file.
+I tried to use **vi** to open the datadog.yaml, but was denied permissions. **Sudo** let me through. Using **/tags** to find the section on tags, and after checking where else the term *tags* showed up, I uncommented the following:
+
+     tags:
+       - mytag
+       - env:prod
+       - role:database
+
+###### Step 3: Find Hostmap in Datadog, provide screenshot
+Back in the browser walk-through for setting up Datadog, from my notes on the Datadog 101 - 1 - Overview [video](https://www.youtube.com/watch?v=uI3YN_cnahk) the Hostmap should be in the Sidebar menu. From **Infrastructure > Hostmap**, 
+
+![Hostmap with VM, tags](images/1_CollectingMetrics_Pt1.png)
