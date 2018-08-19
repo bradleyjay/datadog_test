@@ -95,7 +95,7 @@ I attempted to use **vi** to open the datadog.yaml, but was denied due to permis
 ###### Step 3: Find Hostmap in Datadog, provide screenshot
 Back in the browser walk-through for setting up Datadog, from my notes on the Datadog 101 - 1 - Overview [video](https://www.youtube.com/watch?v=uI3YN_cnahk) the Hostmap should be in the Sidebar menu. From **Infrastructure > Hostmap**, 
 
-![Hostmap with VM, tags](images/1_1_Hostmap.png)
+![Hostmap with VM, tags (??)](images/1_1_Hostmap.png)
 
 ** Install a database on your machine (MongoDB, MySQL, or PostgreSQL) and then install the respective Datadog integration for that database.** 
 
@@ -113,7 +113,7 @@ I've seen this before - it's related to the default auth_socket plugin (MySQL do
 
 ![Auth_Socket](/images/1_2_AuthSocketSQL)
 
-The solution is to grant permissions to the user and use sql that way (i.e., as vagrant@ubuntu-xenial). So, after doing that:
+The solution is to grant permissions to the user and use SQL that way (i.e., as vagrant@ubuntu-xenial). So,
 
     vagrant@ubuntu-xenial:~$ sudo mysql -u root
     mysql> USE mysql
@@ -125,4 +125,39 @@ The solution is to grant permissions to the user and use sql that way (i.e., as 
 
 Then, ```mysqladmin -u vagrant version``` correctly outputs the version, indicating that our MySQL service is up, running, and user accessible. ```mysql -u vagrant``` can now get us to the MySQL monitor to interact with our MySQL service as necessary.
 
-### NOW, install user integration 
+###### Step 2: Install the Corresponding Integration for that Database (MySQL)
+
+From the [MySQL Integration Documentation](https://docs.datadoghq.com/integrations/mysql/), MySQL integration comes with the Datadog Agent installation. For configuration, ```conf.d/mysql.d/conf.yaml``` must be editted in the Agent's [configuration directory](https://docs.datadoghq.com/agent/faq/agent-configuration-files/#agent-configuration-directory), which for Linux is ```/etc/datadog-agent/conf.d/```.
+
+Before doing that, the SQL must be prepared by creating a user for Datadog (actual documentation would of course never list the password, as I've done here). These commands use @'localhost', which will work for our single host proof of concept:
+
+    vagrant@ubuntu-xenial:/etc/datadog-agent/conf.d$ sudo mysql -u root
+    mysql> CREATE USER 'datadog'@'localhost' IDENTIFIED BY 'datadog';
+
+As in the documentation, user creation is verified via:
+
+    mysql -u datadog --password=datadog -e "show status" | \
+    grep Uptime && echo -e "\033[0;32mMySQL user - OK\033[0m" || \
+    echo -e "\033[0;31mCannot connect to MySQL\033[0m"
+    mysql -u datadog --password=datadog -e "show slave status" && \
+    echo -e "\033[0;32mMySQL grant - OK\033[0m" || \
+    echo -e "\033[0;31mMissing REPLICATION CLIENT grant\033[0m"
+
+Which then yields an "access denied" error, as expected. To grant the necessary replication client privileges, I log in as root (this didn't work when logging into MySQL as Datadog):
+
+    vagrant@ubuntu-xenial:/etc/datadog-agent/conf.d$ sudo mysql -u root
+    mysql> GRANT REPLICATION CLIENT ON *.* TO 'datadog'@'localhost' WITH MAX_USER_CONNECTIONS 5;
+    mysql> GRANT PROCESS ON *.* TO 'datadog'@'localhost';
+
+To enable metric collection from the performance_schema database:
+
+    mysql> show databases like 'performance_schema';
+    mysql> GRANT SELECT ON performance_schema.* TO 'datadog'@'localhost';
+
+And finally, to start gathering MySQL metrics, we need add some code config file. However, only the example file conf.yaml.example exists in ```/etc/datadog-agent/conf.d/mysql.d```, so I copy the example to make my own version via```cp conf.yaml.example conf.yaml```. This creates conf.yaml, but the file belongs to root. Finally, I use ```sudo chown dd-agent:dd-agent conf.yaml``` to change ownership properly to the dd-agent.
+
+Now, we can modify to ```mysql.d/conf.yaml```, replacing the commented-out lines in the example with those listed in the documentation (using **sudo vi**, as the file is read-only). My conf.yaml then looks like:
+
+![My conf.yaml](/images/1_2_SQLMetrics_confYamlFile.png)
+
+*Aside:* After restarting the Agent, I notice in the Datadog dashboard that I can't see my MySQL integration info on my host. I was curious before, when my tags didn't show up in the HostMap, despite being set in my config.yaml file. ```sudo datadog-agent status``` reports that it cannot load the Datadog config file, specifically related to mapping values under the "host tags" section. Opening the config.yaml, I see that I've left an extra space in-between one of my tag key:value pairs. After fixing that, then running ```sudo service datadog-agent start```, and finally the status query again, I can see the Agent is up and running correctly, this time. At this point, I've gone back and updated the HostMap image for my answer under Part 1 of this section, "Collecting Metrics."
