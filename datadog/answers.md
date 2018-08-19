@@ -2,8 +2,7 @@ Your answers to the questions go here.
 
 # Datadog Coding Challenge - Bradley Shields
 
-## Workspace Prep Work: Setup
-### Format Testing - Embedding Images:
+## Format Testing - Embedding Images:
 
 To be sure I knew how to embed my screenshots, and that the formatting would be correct, I created the repository [datadog_test](https://github.com/bradleyjay/datadog_test). I tried two methods to embed images from github's "Mastering Markdown" [guide.](https://guides.github.com/features/mastering-markdown/)
 
@@ -25,11 +24,11 @@ Check complete! There's our fearless leader, Tormund Giantsbane (ginger beards o
 *Note: on macOS, to screenshot, use Shift+CMD+4*
 
 
-### Virtual Environment
+## Prerequisites - Setup the Enviornment
 
-#### Initial Install and Launch
+#### Initial VM Install and Launch
 
-I followed the [guide](https://www.vagrantup.com/intro/getting-started/) for setting up a Vagrant Virtual Machine(VM) project:
+Having used Docker briefly before, I was curious to learn about Vagrant. I followed the [guide](https://www.vagrantup.com/intro/getting-started/) for setting up a Vagrant Virtual Machine(VM) project:
 - Downloaded and installed [Vagrant](https://www.vagrantup.com/downloads.html) 2.1.2 for macOS.
 - Per Vagrant's recommendation, updated my [VirtualBox](https://www.virtualbox.org/wiki/Downloads) install to 5.2.18. 
 
@@ -50,6 +49,34 @@ Vagrant base images are called "boxes," and cloning one is how a VirtualBox envi
        config.vm.box = "ubuntu/xenial64"
     end
 
- gave me access to this box. I then commented out the previous ```config.vm.box``` line for Ubuntu 12.04 LTS.
+ gave me access to this box. I then commented out the previous ```config.vm.box``` line for to deselect Ubuntu 12.04 LTS. This version of the virtual box was already running, so a ```vagrant destroy``` was used to remove that instance of the virtual machine. 
 
+ I then ran a ```vagrant up```, which downloaded the new 16.04 LTS box and started our new server. Finally, ```vagrant ssh``` brought me into the new version of the box. Upon launch, there is a message about Ubuntu 18.04.1 LTS being available, but for now I'll use this version unless I find stability or dependency issues. The Ubuntu 16.04 LTS box has *many* more downloads, so the odds seem good that it's a stable release, despite being a daily build.
+
+
+#### Datadog Agent Setup
+
+As instructed, I signed up for Datadog as a "Datadog Recruiting Candidate", then informed Datadog about my stack (Python, MySQL, GitHub, Slack). For the Agent Setup, I chose Ubuntu (since we'll be using our VM, not my local macOS), and applied the provided command to our Vagrant box:
+
+```DD_API_KEY=8677a7b08834961d73c4e0e22dbd6e07 bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent/master/cmd/agent/install_script.sh)"```
+
+After a number of get, unpack, and install calls, the Datadog Agent reported it was running and functioning properly. For reference, the installer reported at the end:
+
+    If you ever want to stop the Agent, run:
+
+        ```sudo systemctl stop datadog-agent```
+
+    And to run it again run:
+
+        ```sudo systemctl start datadog-agent```
+
+
+## Collecting Metrics
+
+Now, the assignment.
+
+1. **Add tags in the Agent config file and show us a screenshot of your host and its tags on the Host Map page in Datadog.**
+
+#### Step 1: Find the Agent config file
+At this point, I went to the Datadog [overview](https://docs.datadoghq.com/) documentation, and opened up the Agent section. Selecting [Ubuntu](https://docs.datadoghq.com/agent/basic_agent_usage/ubuntu/) and reading down the page, the Agent config file location is listed. Looking through the Datadog Agent Installer output in my VM terminal window, I could see Agent V6 was installed, not V5. The Agent config file is therefore located at ```/etc/datadog-agent/datadog.yaml```.
 
