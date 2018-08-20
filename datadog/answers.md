@@ -74,6 +74,10 @@ After a number of get, unpack, and install calls, the Datadog Agent reported it 
 
         ```sudo systemctl start datadog-agent```
 
+#### Useful Links
+
+[Agent Commands - Start, Stop, Restart](https://docs.datadoghq.com/agent/faq/agent-commands/#start-stop-restart-the-agent)
+
 
 ## Collecting Metrics
 
@@ -131,7 +135,7 @@ The solution is to grant permissions to the user and use SQL that way (i.e., as 
 
 Then, ```mysqladmin -u vagrant version``` correctly outputs the version, indicating that our MySQL service is up, running, and user accessible. ```mysql -u vagrant``` can now get us to the MySQL monitor to interact with our MySQL service as necessary.
 
-###### Step 2: Install the Corresponding Integration for that Database (MySQL)
+###### Step 2a: Install the Corresponding Integration for that Database (MySQL) - Preparing MySQL
 
 From the [MySQL Integration Documentation](https://docs.datadoghq.com/integrations/mysql/), MySQL integration comes with the Datadog Agent installation. For configuration, ```conf.d/mysql.d/conf.yaml``` must be editted in the Agent's [configuration directory](https://docs.datadoghq.com/agent/faq/agent-configuration-files/#agent-configuration-directory), which for Linux is ```/etc/datadog-agent/conf.d/```.
 
@@ -155,12 +159,13 @@ Which then yields an "access denied" error, as expected. To grant the necessary 
     mysql> GRANT REPLICATION CLIENT ON *.* TO 'datadog'@'localhost' WITH MAX_USER_CONNECTIONS 5;
     mysql> GRANT PROCESS ON *.* TO 'datadog'@'localhost';
 
+###### Step 2b: Install the Corresponding Integration for that Database (MySQL) - Enabling Metric Collection
 To enable metric collection from the performance_schema database:
 
     mysql> show databases like 'performance_schema';
     mysql> GRANT SELECT ON performance_schema.* TO 'datadog'@'localhost';
 
-And finally, to start gathering MySQL metrics, we need add some code config file. However, only the example file conf.yaml.example exists in ```/etc/datadog-agent/conf.d/mysql.d```, so I copy the example to make my own version via```cp conf.yaml.example conf.yaml```. This creates conf.yaml, but the file belongs to root. Finally, I use ```sudo chown dd-agent:dd-agent conf.yaml``` to change ownership properly to the dd-agent.
+To start gathering MySQL metrics, we need add some code config file. However, only the example file conf.yaml.example exists in ```/etc/datadog-agent/conf.d/mysql.d```, so I copy the example to make my own version via```cp conf.yaml.example conf.yaml```. This creates conf.yaml, but the file belongs to root. Finally, I use ```sudo chown dd-agent:dd-agent conf.yaml``` to change ownership properly to the dd-agent.
 
 Now, we can modify to ```mysql.d/conf.yaml```, replacing the commented-out lines in the example with those listed in the documentation (using **sudo vi**, as the file is read-only). My conf.yaml then looks like:
 
@@ -168,3 +173,30 @@ Now, we can modify to ```mysql.d/conf.yaml```, replacing the commented-out lines
 
 *Aside: After restarting the Agent, I notice in the Datadog dashboard that I can't see my MySQL integration info on my host in Hostmap. I was curious before, when my tags didn't show up in the HostMap, despite being set in my config.yaml file. ```sudo datadog-agent status``` reports that it cannot load the Datadog config file, specifically related to mapping values under the "host tags" section. Opening the config.yaml, I see that I've left an extra space in-between one of my tag key:value pairs. After fixing that, then running ```sudo service datadog-agent start```, and finally the status query again, I can see the Agent is up and running correctly, this time. At this point, I've gone back and updated the HostMap image for my answer under Part 1 of this section, "Collecting Metrics."*
 
+###### Step 2c: Install the Corresponding Integration for that Database (MySQL) - Allow Agent Communication with MySQL
+With that complete, the final step was to add the MySQL Integration for Datadog in-browser, and allow the Agent to connect to MySQL. Following the MySQL Integration [guide](https://app.datadoghq.com/account/settings#integrations/mysql), the remaining step was to create the conf.d/mysql.yaml file as per:
+
+    init_config:
+
+    instances:
+     - server: localhost
+        user: datadog
+        pass: datadog
+     
+        tags:
+            - optional_tag1
+            - optional_tag2
+        options:
+            replication: 0
+            galera_cluster: 1
+
+Then, I set ownership and permissions for that file via:
+    
+    sudo chown dd-agent:dd-agent mysql.yaml 
+    sudo chmod 755 ./mysql.yaml 
+
+Restarting the agent with ```sudo service datadog-agent restart```, I then ran the **info** command (```sudo datadog-agent status``` on Linux), confirming that the "Checks" section showed a sucessful MySQL Collector check:
+
+![MySQL Collector Check](images/1_2c_MySQLChecks.png)
+
+And, finally, I pressed the MySQL "Install Integration" button.
