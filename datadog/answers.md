@@ -236,7 +236,7 @@ And finally, the metric reported from the random.randint() line uncommented in m
 
 **Change your check's collection interval so that it only submits the metric once every 45 seconds.**
 
-I modified my_metric.yaml located at ```/etc/datadog-agent/conf.d``` to include a min_collection_interval of 45:
+I modified my_metric.yaml located at ```/etc/datadog-agent/conf.d``` to include a min_collection_interval of 45 seconds:
 
 ![Min Collection Interval](images/1_4_minCollectionInterval.png)
 
