@@ -16,12 +16,12 @@ This works, but that's not necessarily a static URL. Depending on the branch ref
 
 2. Relative github path
 
-``` ![GitHub Logo](/images/tormund.jpg)```
+``` ![Tormund](images/tormund.jpg)```
 
 
 In this case, a relative path works better because it moves with the README.md in a given branch, which in this case is where I'm embedding the image. And so,
 
-![Tormund Giantsbane](/images/tormund.jpeg)
+![Tormund Giantsbane](images/tormund.jpeg)
 
 Check complete! There's our fearless leader, Tormund Giantsbane (ginger beards of the world, unite!) Now, to set up the enviornment for the Coding Challenge.
 
@@ -103,7 +103,7 @@ Back in the browser walk-through for setting up Datadog, from my notes on the Da
 
 ![Hostmap with VM, tags (??)](images/1_1_Hostmap.png)
 
-** Install a database on your machine (MongoDB, MySQL, or PostgreSQL) and then install the respective Datadog integration for that database.** 
+**Install a database on your machine (MongoDB, MySQL, or PostgreSQL) and then install the respective Datadog integration for that database.** 
 
 ###### Step 1: Install a database (MySQL)
 
@@ -117,7 +117,7 @@ I confirmed the SQL server was running via ```systemctl status mysql.service```.
 
 I've seen this before - it's related to the default auth_socket plugin (MySQL does this on macOS too). This [Stack Overflow](https://stackoverflow.com/questions/39281594/error-1698-28000-access-denied-for-user-rootlocalhost) helped resolve the issue. The user root is using the **auth_socket** plugin by default, as below:
 
-![Auth_Socket](/images/1_2_AuthSocketSQL.png)
+![Auth_Socket](images/1_2_AuthSocketSQL.png)
 
 The solution is to grant permissions to the user and use SQL that way (i.e., as vagrant@ubuntu-xenial). So,
 
@@ -164,7 +164,7 @@ And finally, to start gathering MySQL metrics, we need add some code config file
 
 Now, we can modify to ```mysql.d/conf.yaml```, replacing the commented-out lines in the example with those listed in the documentation (using **sudo vi**, as the file is read-only). My conf.yaml then looks like:
 
-![My conf.yaml](/images/1_2_SQLMetrics_confYamlFile.png)
+![My conf.yaml](images/1_2_SQLMetrics_confYamlFile.png)
 
 *Aside: After restarting the Agent, I notice in the Datadog dashboard that I can't see my MySQL integration info on my host. I was curious before, when my tags didn't show up in the HostMap, despite being set in my config.yaml file. ```sudo datadog-agent status``` reports that it cannot load the Datadog config file, specifically related to mapping values under the "host tags" section. Opening the config.yaml, I see that I've left an extra space in-between one of my tag key:value pairs. After fixing that, then running ```sudo service datadog-agent start```, and finally the status query again, I can see the Agent is up and running correctly, this time. At this point, I've gone back and updated the HostMap image for my answer under Part 1 of this section, "Collecting Metrics."*
 
