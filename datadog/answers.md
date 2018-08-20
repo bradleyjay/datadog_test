@@ -117,7 +117,7 @@ I confirmed the SQL server was running via ```systemctl status mysql.service```.
 
 I've seen this before - it's related to the default auth_socket plugin (MySQL does this on macOS too). This [Stack Overflow](https://stackoverflow.com/questions/39281594/error-1698-28000-access-denied-for-user-rootlocalhost) helped resolve the issue. The user root is using the **auth_socket** plugin by default, as below:
 
-![Auth_Socket](images/1_2_AuthSocketSQL.png)
+![Auth_Socket](images/1_2_AuthSocketSQL.ng)
 
 The solution is to grant permissions to the user and use SQL that way (i.e., as vagrant@ubuntu-xenial). So,
 
