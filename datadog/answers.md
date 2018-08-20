@@ -92,7 +92,7 @@ I attempted to use **vi** to open the datadog.yaml, but was denied due to permis
     # Set the host's tags (optional)
         tags: machine_name: VagrantVM_Ubuntu1604LTS, region:eastus, env:prod, role:database
 
-*Aside: I notice this mistake later, that there's an extra space between *machine_name:* and *VagrantVM_Ubuntu1604LTS* When I see the Hostmap in the next step, I do immediately notice that my custom tags aren't there, but decided that there may be another later step that updates the Host's info after some investigating. After setting up my MySQL integration in the next part of "Collecting Metrics," I realize that's not the case when more information is missing. There's more explanation at that point in this document, as you'll see. I came back to replace the two lines with:*
+*Aside: I notice this mistake later, that there's an extra space between **machine_name:** and **VagrantVM_Ubuntu1604LTS** When I see the Hostmap in the next step, I do immediately notice that my custom tags aren't there, but decided that there may be another later step that updates the Host's info after some investigating. After setting up my MySQL integration in the next part of "Collecting Metrics," I realize that's not the case when more information is missing. There's more explanation at that point in this document, as you'll see - please keep reading for now. I came back to replace the above two lines with:*
 
     # Set the host's tags (optional)
         tags: machine_name:VagrantVM_Ubuntu1604LTS, region:eastus, env:prod, role:database 
@@ -117,7 +117,7 @@ I confirmed the SQL server was running via ```systemctl status mysql.service```.
 
 I've seen this before - it's related to the default auth_socket plugin (MySQL does this on macOS too). This [Stack Overflow](https://stackoverflow.com/questions/39281594/error-1698-28000-access-denied-for-user-rootlocalhost) helped resolve the issue. The user root is using the **auth_socket** plugin by default, as below:
 
-![Auth_Socket](/images/1_2_AuthSocketSQL)
+![Auth_Socket](/images/1_2_AuthSocketSQL.png)
 
 The solution is to grant permissions to the user and use SQL that way (i.e., as vagrant@ubuntu-xenial). So,
 
@@ -135,7 +135,7 @@ Then, ```mysqladmin -u vagrant version``` correctly outputs the version, indicat
 
 From the [MySQL Integration Documentation](https://docs.datadoghq.com/integrations/mysql/), MySQL integration comes with the Datadog Agent installation. For configuration, ```conf.d/mysql.d/conf.yaml``` must be editted in the Agent's [configuration directory](https://docs.datadoghq.com/agent/faq/agent-configuration-files/#agent-configuration-directory), which for Linux is ```/etc/datadog-agent/conf.d/```.
 
-Before doing that, the SQL must be prepared by creating a user for Datadog (actual documentation would of course never list the password, as I've done here). These commands use @'localhost', which will work for our single host proof of concept:
+Before doing that, the SQL must be prepared by creating a user for Datadog (actual documentation, I would of course **never** list the password, as I've done here). These commands use @'localhost', which will work for our single host proof of concept:
 
     vagrant@ubuntu-xenial:/etc/datadog-agent/conf.d$ sudo mysql -u root
     mysql> CREATE USER 'datadog'@'localhost' IDENTIFIED BY 'datadog';
@@ -166,4 +166,5 @@ Now, we can modify to ```mysql.d/conf.yaml```, replacing the commented-out lines
 
 ![My conf.yaml](/images/1_2_SQLMetrics_confYamlFile.png)
 
-*Aside:* After restarting the Agent, I notice in the Datadog dashboard that I can't see my MySQL integration info on my host. I was curious before, when my tags didn't show up in the HostMap, despite being set in my config.yaml file. ```sudo datadog-agent status``` reports that it cannot load the Datadog config file, specifically related to mapping values under the "host tags" section. Opening the config.yaml, I see that I've left an extra space in-between one of my tag key:value pairs. After fixing that, then running ```sudo service datadog-agent start```, and finally the status query again, I can see the Agent is up and running correctly, this time. At this point, I've gone back and updated the HostMap image for my answer under Part 1 of this section, "Collecting Metrics."
+*Aside: After restarting the Agent, I notice in the Datadog dashboard that I can't see my MySQL integration info on my host. I was curious before, when my tags didn't show up in the HostMap, despite being set in my config.yaml file. ```sudo datadog-agent status``` reports that it cannot load the Datadog config file, specifically related to mapping values under the "host tags" section. Opening the config.yaml, I see that I've left an extra space in-between one of my tag key:value pairs. After fixing that, then running ```sudo service datadog-agent start```, and finally the status query again, I can see the Agent is up and running correctly, this time. At this point, I've gone back and updated the HostMap image for my answer under Part 1 of this section, "Collecting Metrics."*
+
