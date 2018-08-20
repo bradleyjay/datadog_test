@@ -199,4 +199,40 @@ Restarting the agent with ```sudo service datadog-agent restart```, I then ran t
 
 ![MySQL Collector Check](images/1_2c_MySQLChecks.png)
 
-And, finally, I pressed the MySQL "Install Integration" button.
+And, finally, I pressed the MySQL "Install Integration" button, completing the Integration install. Checking my Hostmap again, I can see the MySQL Integration:
+
+![Hostmap With MySQL](images/1_2c_HostmapUpdate.png)
+
+**Create a custom Agent check that submits a metric named my_metric with a random value between 0 and 1000.**
+
+From the Datadog Docs [Agent Checks](https://docs.datadoghq.com/developers/agent_checks/) section, found with the search function and a tiny amount of digging around for the relevant link, checks are handled through the AgentCheck interface. The documentation provides a simple tutorial.
+
+I created my_metric.yaml in /etc/datadog-agent/conf.d, with a single instance:
+
+![my_metric.yaml](images/1_3_my_metric_yaml.png)
+
+And a basic check python code in /etc/datadog-agent/checks.d, using random.randint() for the random number generation:
+
+![my_metric.py](images/1_3_my_metric_py.png)
+
+I restarted the Agent via ```sudo service datadog-agent restart``` , then used ```sudo -u dd-agent -- datadog-agent check my_metric``` to confirm the check was being run:
+
+![Metric Check](images/1_3_metricCheck.png)
+
+To confirm that Datadog was receiving actual metric values, I checked static values of 1 and 4, to be sure the Hostmap metric graph wasn't reporting a default value or similar. Between each, I restarted the Agent service, yielding a fresh my_metric.pyc file. 
+
+First, here is the Hostmap, showing the custom Agent check in the left-hand pane of the ubuntu-xenial detail window (pardon the bouncing values, I played around with what to use, and the random generator a bit):
+
+![Hostmap with custom Agent Check](images/1_3_MetricInHostMap.png)
+
+Next, close-ups of static values being reported, 1 and 4 respectively:
+
+![Metric Check 1](images/1_3_metricVal1.png)
+![Metric Check 4](images/1_3_metricVal4.png)
+
+And finally, the metric reported from the random.randint() line uncommented in my_metric.py:
+
+![Metric Check Rand](images/1_3_metricValRand.png)
+
+**Change your check's collection interval so that it only submits the metric once every 45 seconds.**
+
