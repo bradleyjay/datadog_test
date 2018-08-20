@@ -139,7 +139,7 @@ Then, ```mysqladmin -u vagrant version``` correctly outputs the version, indicat
 
 From the [MySQL Integration Documentation](https://docs.datadoghq.com/integrations/mysql/), MySQL integration comes with the Datadog Agent installation. For configuration, ```conf.d/mysql.d/conf.yaml``` must be editted in the Agent's [configuration directory](https://docs.datadoghq.com/agent/faq/agent-configuration-files/#agent-configuration-directory), which for Linux is ```/etc/datadog-agent/conf.d/```.
 
-Before doing that, the SQL must be prepared by creating a user for Datadog (actual documentation, I would of course **never** list the password, as I've done here). These commands use @'localhost', which will work for our single host proof of concept:
+Before doing that, the SQL must be prepared by creating a user for Datadog (in actual documentation, I would of course **never** list the password, as I've done here). These commands use @'localhost', which will work for our single host proof of concept:
 
     vagrant@ubuntu-xenial:/etc/datadog-agent/conf.d$ sudo mysql -u root
     mysql> CREATE USER 'datadog'@'localhost' IDENTIFIED BY 'datadog';
