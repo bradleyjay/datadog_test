@@ -243,3 +243,15 @@ I modified my_metric.yaml located at ```/etc/datadog-agent/conf.d``` to include 
 After restarting the service, the metric is reported roughly half as frequently:
 
 ![Min Collect Metric](images/1_4_minCollectMetric.png)
+
+** Bonus Question:**
+
+###### The Python Script way (incorrect, just for context)
+To justify my answer below, the flush() method in the Gauge class does take *interval* as an argument. This is located in [aggregator.py](https://github.com/DataDog/dd-agent/blob/master/aggregator.py), in the dd-agent source code. In your Python script, you could directly set how often a given metric was flushed to Datadog:
+
+![Gauge](images/1_5_Gauge.png)
+
+###### Without modifying the Python Script (my answer)
+Instead, modifying the .yaml file for a given check (located at ```/etc/datadog-agent/conf.d```) allows setting min_collection_interval. From the Agent checks [documentation](https://docs.datadoghq.com/developers/agent_checks/), if this value is greater than the interval time for the Agent collector, a line is added to the log noting that the metric was not collected. Each time the Collector runs, it compares the time since the check was last run, and if it's greater than the set value of min_collection_interval, it runs the check. 
+
+Otherwise, there are several options in the Agent config file, ```/etc/datadog-agent/datadog.yaml```. There are options for process-config and so on (Line 503), among others, but that's more specific than I think the question was intended to be.
