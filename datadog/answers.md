@@ -105,7 +105,7 @@ I attempted to use **vi** to open the datadog.yaml, but was denied due to permis
 ###### Step 3: Find Hostmap in Datadog, provide screenshot
 Back in the browser walk-through for setting up Datadog, from my notes on the Datadog 101 - 1 - Overview [video](https://www.youtube.com/watch?v=uI3YN_cnahk) the Hostmap should be in the Sidebar menu. From **Infrastructure > Hostmap**, 
 
-![Hostmap with VM, tags (??)](images/1_1_Hostmap.png)
+![Hostmap with VM, tags](images/1_1_Hostmap.png)
 
 **Install a database on your machine (MongoDB, MySQL, or PostgreSQL) and then install the respective Datadog integration for that database.** 
 
@@ -244,7 +244,7 @@ After restarting the service, the metric is reported roughly half as frequently:
 
 ![Min Collect Metric](images/1_4_minCollectMetric.png)
 
-** Bonus Question:**
+**Bonus Question Can you change the collection interval without modifying the Python check file you created?**
 
 ###### The Python Script way (incorrect, just for context)
 To justify my answer below, the flush() method in the Gauge class does take *interval* as an argument. This is located in [aggregator.py](https://github.com/DataDog/dd-agent/blob/master/aggregator.py), in the dd-agent source code. In your Python script, you could directly set how often a given metric was flushed to Datadog:
