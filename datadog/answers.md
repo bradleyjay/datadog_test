@@ -297,7 +297,7 @@ From my example timeboard, I'll start building each feature that will get added 
     dog timeboard show_all
     dog timeboard delete <timeboard id>
 
-I was able to correctly graph my_metric: under the **arguments** listed for Creating a Timeboard, under **graphs**, the proper **definition** syntax is listed for graphing a metric for a given host:
+I was able to correctly graph my_metric: under the **arguments** listed for Creating a Timeboard, under **graphs**, the proper **definition** syntax is listed for graphing a metric for a given host. After building this request definition more or less by intuition (and some trial and error), I found the very helpful Graphing Primer using JSON [guide](https://docs.datadoghq.com/graphing/miscellaneous/graphingjson/). I discovered my syntax for scoping by host was a little off, and instead wrote this:
 
 ![Python with Metric added](images/2_1_MetricAdded.png)
 
@@ -305,7 +305,15 @@ This yields the timeboard:
 
 ![Python with Metric added](images/2_1_Timeboard.png)
 
+
+
 ### - Any metric from the Integration on your Database with the anomaly function applied.
+
+
+
+
+https://docs.datadoghq.com/graphing/#scope
+"q": "avg:system.disk.free{*}.rollup(avg, 60)"
 
 
 
