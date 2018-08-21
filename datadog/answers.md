@@ -329,7 +329,21 @@ So instead, I've implimented a graph to plot the query ```"q": "my_metric{host:u
 
 
 ![Python with Metric3 added](images/2_3_MetricAdded.png)
+
+And the timeboard, 
+
 ![Timeboard with Metric3 added](images/2_3_Timeboard.png) 
+
+### Please be sure, when submitting your hiring challenge, to include the script that you've used to create this Timeboard.
+
+To pull my Python script from the Vagrant VM, I first installed vagrant-scp (as [recommended](https://medium.com/@smartsplash/using-scp-and-vagrant-scp-in-virtualbox-to-copy-from-guest-vm-to-host-os-and-vice-versa-9d2c828b6197})), then pulled the file to my local machine via:
+
+    vagrant plugin install vagrant-scp
+    vagrant scp :/etc/datadog-agent/dog/my_first_timeboard.py ./
+
+To be explicit, the Python script I used to create this timeboard is at the path ```pythonScripts/my_first_timeboard.py```, and embeded here:
+
+![Python Timeboard](pythonScripts/my_first_timeboard.py)
 
 ### Once this is created, access the Dashboard from your Dashboard List in the UI:
 ### - Set the Timeboard's timeframe to the past 5 minutes
