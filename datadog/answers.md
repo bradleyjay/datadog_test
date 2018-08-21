@@ -83,7 +83,7 @@ After a number of get, unpack, and install calls, the Datadog Agent reported it 
 
 Now, for the Coding Challenge.
 
-### * Add tags in the Agent config file and show us a screenshot of your host and its tags on the Host Map page in Datadog.
+### - Add tags in the Agent config file and show us a screenshot of your host and its tags on the Host Map page in Datadog.
 
 ###### Step 1: Find the Agent config file
 At this point, I went to the Datadog [overview](https://docs.datadoghq.com/) documentation, and opened up the Agent section. Selecting [Ubuntu](https://docs.datadoghq.com/agent/basic_agent_usage/ubuntu/) and reading down the page, the Agent config file location is listed. Looking through the Datadog Agent Installer output in my VM terminal window, I could see Agent V6 was installed, not V5. The Agent config file is therefore located at ```/etc/datadog-agent/datadog.yaml```.
