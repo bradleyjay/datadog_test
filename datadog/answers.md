@@ -256,7 +256,56 @@ The incorrect way to do this, to justify my above answer is as follows. The flus
 
 
 ## Section 2: Visualizing Data
+### Utilize the Datadog API to create a Timeboard:
 
-### Utilize the Datadog API to create a Timeboard that contains:
-### - Your custom metric scoped over your host.
+###### Step 1: Setup Dogshell
+I opted to use the command-line interface for the Datadog API, described in the Dogshell [guide](https://docs.datadoghq.com/developers/faq/dogshell-quickly-use-datadog-s-api-from-terminal-shell/). To install it, I followed the dedicated [instructions](https://github.com/DataDog/datadogpy#installation). First, I installed pip from my Ubuntu VM command line:
+
+    sudo apt-get install python-pip
+
+then ran:
+
+    pip install datadog
+
+I then tested my install via ```dog metric post test_metric 1```, and confirmed that I'd like to create my ```~/.dogrc```.
+
+When asked for my API key, I checked under the Datadog web interface > Integrations > APIs. The API key had been created already, through previous steps. I generated an APP key named my_app_key there, and entered them in response to the dogshell initialization query, which replied "Wrote /home/vagrant/.dogrc" to confirm the file creation.
+
+###### Step 2: Use Dogshell commands to create a Timeboard
+
+For the command to create my timeboard, I found the Datadog API [guide](https://docs.datadoghq.com/api/?lang=python#timeboards) section on Creating Timeboards. I created a Python script from the Example Request listed. I entered my API and APP keys (from the previous section), added a title, and named the file ```my_first_timeboard.py```:
+
+![Create Timeboard](images/2_0_CreateTimeboard.png)
+
+I placed this into a new folder in /etc/datadog-agent/ to keep things organized. I checked the timeboard man page via ```dog timeboard -h``` After playing around with possible ```dog timeboard post``` commands, I realized there wasn't a way to feed Dogshell a Python script - those API Python examples are (obviously, now) meant to be run directly in Python to run the ```api.Timeboard.create()``` method at the bottom of the file. I then my Python script via:
+
+    python my_first_timeboard.py
+
+In the Datadog web interface > Dashboards, I now see "My First Timeboard" on the list: 
+
+![Dashboard List](images/2_0_DashboardList.png)
+
+and clicking on it, that it contains our example metric (Average Memory Free):
+
+![My First Timeboard](images/2_0_MyFirstTimeboard.png)
+
+### ...a timeboard that contains:
+###  - Your custom metric scoped over your host.
+
+From my example timeboard, I'll start building each feature that will get added to the timeboard by our ```api.Timeboard.create()``` call, as a graph. I did try implimenting this first as a call to send metrics directly via api.Metric.send() (detailed [here](https://docs.datadoghq.com/api/?lang=python#post-time-series-points)), but while that made the metric available on Datadog for my localhost, it didn't generate the graph as I intended. As I'm testing syntax, I'm deleting incorrect timeboards via the command
+
+    dog timeboard show_all
+    dog timeboard delete <timeboard id>
+
+I was able to correctly graph my_metric: under the **arguments** listed for Creating a Timeboard, under **graphs**, the proper **definition** syntax is listed for graphing a metric for a given host:
+
+![Python with Metric added](images/2_1_MetricAdded.png)
+
+This yields the timeboard:
+
+![Python with Metric added](images/2_1_Timeboard.png)
+
+### - Any metric from the Integration on your Database with the anomaly function applied.
+
+
 
