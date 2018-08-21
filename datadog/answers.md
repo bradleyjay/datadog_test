@@ -305,12 +305,16 @@ This yields the timeboard:
 
 ![Python with Metric added](images/2_1_Timeboard.png)
 
-
-
 ### - Any metric from the Integration on your Database with the anomaly function applied.
 
+With the JSON guide in hand, this part is much easier. The anomaly function is added as simply wrapping the metric in the anomalies() function. Additionally, per the general anomaly monitor [guide](https://docs.datadoghq.com/monitors/monitor_types/anomaly/), I'll watch for values beyond two standard deviations from usual percentage of CPU time MySQL spends in user space:
 
+![Python with Metric2 added](images/2_2_MetricAdded.png)
+![Python with Metric2 added](images/2_2_Timeboard.png)
 
+### - Your custom metric with the rollup function applied to sum up all the points for the past hour into one bucket
+
+Simply, add another query function (not on same graph), and apply rollup to it. Set interval to likely 60*60.
 
 https://docs.datadoghq.com/graphing/#scope
 "q": "avg:system.disk.free{*}.rollup(avg, 60)"
