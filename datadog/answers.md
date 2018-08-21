@@ -303,21 +303,55 @@ I was able to correctly graph my_metric: under the **arguments** listed for Crea
 
 This yields the timeboard:
 
-![Python with Metric added](images/2_1_Timeboard.png)
+![Timeboard with Metric added](images/2_1_Timeboard.png)
 
 ### - Any metric from the Integration on your Database with the anomaly function applied.
 
 With the JSON guide in hand, this part is much easier. The anomaly function is added as simply wrapping the metric in the anomalies() function. Additionally, per the general anomaly monitor [guide](https://docs.datadoghq.com/monitors/monitor_types/anomaly/), I'll watch for values beyond two standard deviations from usual percentage of CPU time MySQL spends in user space:
 
 ![Python with Metric2 added](images/2_2_MetricAdded.png)
-![Python with Metric2 added](images/2_2_Timeboard.png)
+![Timeboard with Metric2 added](images/2_2_Timeboard.png)
 
 ### - Your custom metric with the rollup function applied to sum up all the points for the past hour into one bucket
 
-Simply, add another query function (not on same graph), and apply rollup to it. Set interval to likely 60*60.
+Aggregate and rollup are covered in this [guide](https://docs.datadoghq.com/graphing/#aggregate-and-rollup). 
 
-https://docs.datadoghq.com/graphing/#scope
-"q": "avg:system.disk.free{*}.rollup(avg, 60)"
+**I tried:** Since previously I modified my_metric.yaml located at ```/etc/datadog-agent/conf.d``` to collect my_metric at (at minimum) 45 second intervals, to rollup data over the last hour, that's 80 points we need (3600 seconds * (1 data point/45 seconds)). I added another graph to plot the query ```"q": "my_metric{host:ubuntu-xenial}.rollup(sum,80)"```.
+
+**Correct way**: That's not quite right - the graph output looked far too low. The '80' value is *not* point count, it's time in seconds. As per the [documentation](https://docs.datadoghq.com/graphing/miscellaneous/functions/) on .rollup,
+
+    The function takes two parameters, method and time: .rollup(method,time). The method can be sum/min/max/count/avg and time is in seconds. You can use either one individually, or both together like .rollup(sum,120).
+
+So instead, I've implimented a graph to plot the query ```"q": "my_metric{host:ubuntu-xenial}.rollup(sum,3600)"``` as an aggregate sum of the last 3600 seconds (one hour) of my_metric values:
 
 
+![Python with Metric3 added](images/2_3_MetricAdded.png)
+![Timeboard with Metric3 added](images/2_3_Timeboard.png) 
 
+### Once this is created, access the Dashboard from your Dashboard List in the UI:
+### - Set the Timeboard's timeframe to the past 5 minutes
+By selecting the last sliver of time on any graph using the mouse, the last five minutes are selected (as far as I can tell, that's the minimum displayable window): 
+![UI Selection of last 5 minutes in timeBoard](images/2_4_Last5Min_InUI.png)
+
+### - Take a snapshot of this graph and use the @ notation to send it to yourself.
+Using the camera button in the top right of any graph, the option to take a snapshot comes forward. In that window, using @ suggests a list of users, from which I chose bradleyjshields@gmail.com:
+ ![UI Selection of last 5 minutes in timeBoard](images/2_5_SnapshotWithAtNotation.png)
+
+And there it is, in my gmail:
+![UI Selection of last 5 minutes in timeBoard](images/2_5_snapshot_email.png)
+
+### - Bonus Question: What is the Anomaly graph displaying?
+Generally, an [anomaly](https://docs.datadoghq.com/monitors/monitor_types/anomaly/) uses algorithimic detection to compare a metric to it's past values, and can be configured to use historical data as well (time of day, day of the week patterns, and so on).
+
+The Anomaly graph here is displaying a region on either side of the current value of the reported metric. This represents the range of values within a set number (2, here) of standard deviations of the mean value, taken over some number of seconds set by a default rollup value, explained [here]([rollup](https://docs.datadoghq.com/monitors/monitor_types/anomaly/)), but I'm not sure what that default is. Because I've chosen the 'basic' algorithm, the anomaly is calculated with a "simple lagging quantile computation," i.e. no seasonal/longer term trend data.
+
+## Monitoring Data
+
+### Create a new Metric Monitor that watches the average of your custom metric (my_metric) and will alert if it’s above the following values over the past 5 minutes:
+### - Warning threshold of 500
+### - Alerting threshold of 800
+### - And also ensure that it will notify you if there is No Data for this query over the past 10m.
+
+To create a Metric Monitor ([documentation](https://docs.datadoghq.com/monitors/monitor_types/metric/)),
+
+# Next up, create that metric monitor in the UI, with warning and alert thresholds.
