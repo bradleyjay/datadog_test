@@ -254,3 +254,9 @@ The incorrect way to do this, to justify my above answer is as follows. The flus
 
 ![Gauge](images/1_5_Gauge.png)
 
+
+## Section 2: Visualizing Data
+
+### Utilize the Datadog API to create a Timeboard that contains:
+### - Your custom metric scoped over your host.
+
