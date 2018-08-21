@@ -96,14 +96,14 @@ I attempted to use **vi** to open the datadog.yaml, but was denied due to permis
     # Set the host's tags (optional)
         tags: machine_name: VagrantVM_Ubuntu1604LTS, region:eastus, env:prod, role:database
 
-*Aside: I notice this mistake later, that there's an extra space between **machine_name:** and **VagrantVM_Ubuntu1604LTS** When I see the Hostmap in the next step, I do immediately notice that my custom tags aren't there, but decided that there may be another later step that updates the Host's info after some investigating. After setting up my MySQL integration in the next part of "Collecting Metrics," I realize that's not the case when more information is missing. There's more explanation at that point in this document, as you'll see - please keep reading for now. I came back to replace the above two lines with:*
+*Aside: I notice this mistake later, that there's an extra space between **machine_name:** and **VagrantVM_Ubuntu1604LTS**. When I see the Hostmap in the next step, I do immediately notice that my custom tags aren't there, but decided that there may be another later step that updates the Host's info, after some investigating. After setting up my MySQL integration in the next part of "Collecting Metrics," I realize that's not the case when more information is missing. There's more explanation at that point in this document, as you'll see - please keep reading for now. I came back at that time to replace the above two lines with:*
 
     # Set the host's tags (optional)
         tags: machine_name:VagrantVM_Ubuntu1604LTS, region:eastus, env:prod, role:database 
 
 
 ###### Step 3: Find Hostmap in Datadog, provide screenshot
-Back in the browser walk-through for setting up Datadog, from my notes on the Datadog 101 - 1 - Overview [video](https://www.youtube.com/watch?v=uI3YN_cnahk) the Hostmap should be in the Sidebar menu. From **Infrastructure > Hostmap**, 
+Back in the browser walk-through for setting up Datadog, from my notes on the Datadog 101 - 1 - Overview [video](https://www.youtube.com/watch?v=uI3YN_cnahk) the Hostmap should be in the Sidebar menu. From **Infrastructure > Hostmap**, note the tags present in the right hand of the pane displaying info about our Ubuntu VM host - they match those added in datadog.yaml: 
 
 ![Hostmap with VM, tags](images/1_1_Hostmap.png)
 
@@ -113,7 +113,7 @@ Back in the browser walk-through for setting up Datadog, from my notes on the Da
 
 Following the Debian/Ubuntu apt-get install workflow [guide](https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/#apt-repo-fresh-install), I installed via ```sudo apt-get install mysql-server```, and left the root password blank. Of course, that's not secure, but for the proof of concept we're doing here, simplicity seemed wise. I found this [guide](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-16-04) useful as well.
 
-I confirmed the SQL server was running via ```systemctl status mysql.service```. The second check to make sure MySQL was running **and** user accessible, done by a version check via ```mysqladmin -p -u root version```
+I confirmed the SQL server was running via ```systemctl status mysql.service```. The second check to make sure MySQL was running **and** user accessible, done by a version check via ```mysqladmin -p -u root version```:
 
     vagrant@ubuntu-xenial:~$ mysqladmin -u root version
     mysqladmin: connect to server at 'localhost' failed
@@ -139,7 +139,7 @@ Then, ```mysqladmin -u vagrant version``` correctly outputs the version, indicat
 
 From the [MySQL Integration Documentation](https://docs.datadoghq.com/integrations/mysql/), MySQL integration comes with the Datadog Agent installation. For configuration, ```conf.d/mysql.d/conf.yaml``` must be editted in the Agent's [configuration directory](https://docs.datadoghq.com/agent/faq/agent-configuration-files/#agent-configuration-directory), which for Linux is ```/etc/datadog-agent/conf.d/```.
 
-Before doing that, the SQL must be prepared by creating a user for Datadog (actual documentation, I would of course **never** list the password, as I've done here). These commands use @'localhost', which will work for our single host proof of concept:
+Before doing that, the SQL must be prepared by creating a user for Datadog (in actual documentation, I would of course **never** list the password, as I've done here). These commands use @'localhost', which will work for our single host proof of concept:
 
     vagrant@ubuntu-xenial:/etc/datadog-agent/conf.d$ sudo mysql -u root
     mysql> CREATE USER 'datadog'@'localhost' IDENTIFIED BY 'datadog';
@@ -165,7 +165,7 @@ To enable metric collection from the performance_schema database:
     mysql> show databases like 'performance_schema';
     mysql> GRANT SELECT ON performance_schema.* TO 'datadog'@'localhost';
 
-To start gathering MySQL metrics, we need add some code config file. However, only the example file conf.yaml.example exists in ```/etc/datadog-agent/conf.d/mysql.d```, so I copy the example to make my own version via```cp conf.yaml.example conf.yaml```. This creates conf.yaml, but the file belongs to root. Finally, I use ```sudo chown dd-agent:dd-agent conf.yaml``` to change ownership properly to the dd-agent.
+To start gathering MySQL metrics, we need add some code to the config file. However, only the example file conf.yaml.example exists in ```/etc/datadog-agent/conf.d/mysql.d```, so I copied the example to make my own version via```cp conf.yaml.example conf.yaml```. This creates conf.yaml, but the file belongs to root. Finally, I use ```sudo chown dd-agent:dd-agent conf.yaml``` to change ownership properly to the dd-agent.
 
 Now, we can modify to ```mysql.d/conf.yaml```, replacing the commented-out lines in the example with those listed in the documentation (using **sudo vi**, as the file is read-only). My conf.yaml then looks like:
 
@@ -246,12 +246,13 @@ After restarting the service, the metric is reported roughly half as frequently:
 
 **Bonus Question Can you change the collection interval without modifying the Python check file you created?**
 
-###### The Python Script way (incorrect, just for context)
-To justify my answer below, the flush() method in the Gauge class does take *interval* as an argument. This is located in [aggregator.py](https://github.com/DataDog/dd-agent/blob/master/aggregator.py), in the dd-agent source code. In your Python script, you could directly set how often a given metric was flushed to Datadog:
+###### Without modifying the Python Script (my answer)
+Modifying the .yaml file for a given check (located at ```/etc/datadog-agent/conf.d```) allows setting min_collection_interval. From the Agent checks [documentation](https://docs.datadoghq.com/developers/agent_checks/), if this value is greater than the interval time for the Agent collector, a line is added to the log noting that the metric was not collected. Each time the Collector runs, it compares the time since the check was last run, and if it's greater than the set value of min_collection_interval, it runs the check. 
+
+Otherwise, there are several options in the Agent config file, ```/etc/datadog-agent/datadog.yaml```. There are options for process-config and so on (Line 503), among others, but that's more specific than I think the question was intended to be.
+
+###### The Python Script way (as stated in the question, incorrect - I've added this here for context)
+The incorrect way to do this, to justify my above answer is as follows. The flush() method in the Gauge class does take *interval* as an argument. This is located in [aggregator.py](https://github.com/DataDog/dd-agent/blob/master/aggregator.py), in the dd-agent source code. In your Python script, you could directly set how often a given metric was flushed to Datadog:
 
 ![Gauge](images/1_5_Gauge.png)
 
-###### Without modifying the Python Script (my answer)
-Instead, modifying the .yaml file for a given check (located at ```/etc/datadog-agent/conf.d```) allows setting min_collection_interval. From the Agent checks [documentation](https://docs.datadoghq.com/developers/agent_checks/), if this value is greater than the interval time for the Agent collector, a line is added to the log noting that the metric was not collected. Each time the Collector runs, it compares the time since the check was last run, and if it's greater than the set value of min_collection_interval, it runs the check. 
-
-Otherwise, there are several options in the Agent config file, ```/etc/datadog-agent/datadog.yaml```. There are options for process-config and so on (Line 503), among others, but that's more specific than I think the question was intended to be.
