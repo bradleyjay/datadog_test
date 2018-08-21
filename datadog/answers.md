@@ -341,9 +341,9 @@ To pull my Python script from the Vagrant VM, I first installed vagrant-scp (as 
     vagrant plugin install vagrant-scp
     vagrant scp :/etc/datadog-agent/dog/my_first_timeboard.py ./
 
-To be explicit, the Python script I used to create this timeboard is at the path ```pythonScripts/my_first_timeboard.py```, and embeded via link, and codeblock, here:
+To be explicit, the Python script I used to create this timeboard is at the path ```pythonScripts/my_first_timeboard.py```, and embeded via link and codeblock, here:
 
-![Python Timeboard](pythonScripts/my_first_timeboard.py)
+[Python Script for Timeboard: Github Link](pythonScripts/my_first_timeboard.py)
 
 ```python
 from datadog import initialize, api
