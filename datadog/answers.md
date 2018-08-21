@@ -2,7 +2,7 @@
 
 Hello Datadog, here is my livedoc created while completing the Coding Challenge. The first section covers my initial test for markdown and image embedding, the answers begin at "Prerequisites - Setup the Environment." 
 
-Thank you for the opportunity to interview, I hope to speak with you soon.
+Thank you for the opportunity to interview. I hope to speak with you again soon.
 
 ## Format Testing - Embedding Images:
 
@@ -28,7 +28,7 @@ Check complete! There's our fearless leader, Tormund Giantsbane (ginger beards o
 *Note: on macOS, to screenshot, use Shift+CMD+4*
 
 
-## Prerequisites - Setup the Environment
+## Section 0: Prerequisites - Setup the Environment
 
 #### Initial VM Install and Launch
 
@@ -79,11 +79,11 @@ After a number of get, unpack, and install calls, the Datadog Agent reported it 
 [Agent Commands - Start, Stop, Restart](https://docs.datadoghq.com/agent/faq/agent-commands/#start-stop-restart-the-agent)
 
 
-## Collecting Metrics
+## Section 1: Collecting Metrics
 
-Now, the assignment.
+Now, for the Coding Challenge.
 
-**Add tags in the Agent config file and show us a screenshot of your host and its tags on the Host Map page in Datadog.**
+### Add tags in the Agent config file and show us a screenshot of your host and its tags on the Host Map page in Datadog.
 
 ###### Step 1: Find the Agent config file
 At this point, I went to the Datadog [overview](https://docs.datadoghq.com/) documentation, and opened up the Agent section. Selecting [Ubuntu](https://docs.datadoghq.com/agent/basic_agent_usage/ubuntu/) and reading down the page, the Agent config file location is listed. Looking through the Datadog Agent Installer output in my VM terminal window, I could see Agent V6 was installed, not V5. The Agent config file is therefore located at ```/etc/datadog-agent/datadog.yaml```.
