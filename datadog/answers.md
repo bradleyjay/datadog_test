@@ -80,9 +80,6 @@ After a number of get, unpack, and install calls, the Datadog Agent reported it 
 
 
 ## Section 1: Collecting Metrics
-
-Now, for the Coding Challenge.
-
 ### - Add tags in the Agent config file and show us a screenshot of your host and its tags on the Host Map page in Datadog.
 
 ###### Step 1: Find the Agent config file
@@ -107,7 +104,8 @@ Back in the browser walk-through for setting up Datadog, from my notes on the Da
 
 ![Hostmap with VM, tags](images/1_1_Hostmap.png)
 
-**Install a database on your machine (MongoDB, MySQL, or PostgreSQL) and then install the respective Datadog integration for that database.** 
+
+### - Install a database on your machine (MongoDB, MySQL, or PostgreSQL) and then install the respective Datadog integration for that database.
 
 ###### Step 1: Install a database (MySQL)
 
@@ -203,7 +201,7 @@ And, finally, I pressed the MySQL "Install Integration" button, completing the I
 
 ![Hostmap With MySQL](images/1_2c_HostmapUpdate.png)
 
-**Create a custom Agent check that submits a metric named my_metric with a random value between 0 and 1000.**
+### - Create a custom Agent check that submits a metric named my_metric with a random value between 0 and 1000.
 
 From the Datadog Docs [Agent Checks](https://docs.datadoghq.com/developers/agent_checks/) section, found with the search function and a tiny amount of digging around for the relevant link, checks are handled through the AgentCheck interface. The documentation provides a simple tutorial.
 
@@ -234,7 +232,7 @@ And finally, the metric reported from the random.randint() line uncommented in m
 
 ![Metric Check Rand](images/1_3_metricValRand.png)
 
-**Change your check's collection interval so that it only submits the metric once every 45 seconds.**
+### - Change your check's collection interval so that it only submits the metric once every 45 seconds.
 
 I modified my_metric.yaml located at ```/etc/datadog-agent/conf.d``` to include a min_collection_interval of 45 seconds:
 
@@ -244,7 +242,7 @@ After restarting the service, the metric is reported roughly half as frequently:
 
 ![Min Collect Metric](images/1_4_minCollectMetric.png)
 
-**Bonus Question Can you change the collection interval without modifying the Python check file you created?**
+### - Bonus Question Can you change the collection interval without modifying the Python check file you created?
 
 ###### Without modifying the Python Script (my answer)
 Modifying the .yaml file for a given check (located at ```/etc/datadog-agent/conf.d```) allows setting min_collection_interval. From the Agent checks [documentation](https://docs.datadoghq.com/developers/agent_checks/), if this value is greater than the interval time for the Agent collector, a line is added to the log noting that the metric was not collected. Each time the Collector runs, it compares the time since the check was last run, and if it's greater than the set value of min_collection_interval, it runs the check. 
