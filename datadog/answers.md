@@ -28,7 +28,7 @@ This works, but that's not necessarily a static URL. Depending on the branch ref
 
 In this case, a relative path worked better for me because it allowed me to organize and update images locally within the repo, all in one location. And so,
 
-![A Data Dog](images/ADataDog.jpeg)
+![A Data Dog](images/ADataDog.jpg)
 
 As you can clearly see, here we have a prime example of a Datadog. As an aside, I think your business model is adorable. With image embedding out of the way, I'll set up the enviornment for the Coding Challenge.
 
