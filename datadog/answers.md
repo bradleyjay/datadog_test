@@ -43,7 +43,7 @@ As you can clearly see, here we have a prime example of Datadog. I can't wait to
   - *You can utilize a Containerized approach with Docker for Linux and our dockerized Datadog Agent image.*
 ---
   
-
+### Virtual Machine Setup
 ##### Step 1: Initial VM Install and Launch
 
 Having used Docker briefly before, I was curious to learn about Vagrant. I followed the [guide](https://www.vagrantup.com/intro/getting-started/) for setting up a Vagrant Virtual Machine(VM) project:
