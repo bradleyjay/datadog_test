@@ -1,4 +1,4 @@
-# Datadog Coding Challenge - Bradley Shields
+## Datadog Coding Challenge - Bradley Shields
 
 Hello Datadog, here is my livedoc I created while completing the Datadog Coding Challenge. It was suggested that I document my thought process, steps that worked, those that didn't, and so on. I've positioned the detail level of my answers to be somewhere around that of a workflow you might send a client who is familiar, but maybe needs guidance -  enough detail to reproduce results, even through sub-steps like installing other packages, and so on. 
 
@@ -35,7 +35,7 @@ As you can clearly see, here we have a prime example of Datadog. I can't wait to
 *Note: From here on out, directions directly from the challenge are placed in blockquote format. The answer for that task follows immediately in numbered steps, until the next blockquoted set of directions, where the next task begins.*
 
 
-## Prerequisites - Setup the Environment
+# Prerequisites - Setup the Environment
 *You can utilize any OS/host that you would like to complete this exercise. However, we recommend one of the following approaches:*
   - *You can spin up a fresh linux VM via Vagrant or other tools so that you don’t run into any OS or dependency issues. Here are instructions for setting up a Vagrant Ubuntu VM. We strongly recommend using minimum v. 16.04 to avoid dependency issues.*
   - *You can utilize a Containerized approach with Docker for Linux and our dockerized Datadog Agent image.*
