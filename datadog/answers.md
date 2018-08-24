@@ -4,14 +4,13 @@ Hello Datadog, here is my livedoc I created while completing the Datadog Coding 
 
 I know that you all are extremely familiar, but I thought a detailed account would make a useful reference and show my thought process well. I've enjoyed this challenge and learned a few things from it; thank you for the opportunity.
 
-With that, let's start.
+With that, let's begin.
 
 ---
 
-The first section is an initial test for markdown and image embedding syntax. Answers to the Challenge begin at "Prerequisites - Setup the Environment." 
-
-
 ## Format Testing - Embedding Images:
+
+The first section is an initial test for markdown and image embedding syntax. Answers to the Challenge begin at "Prerequisites - Setup the Environment." 
 
 To be sure I knew how to embed my screenshots, and that my markdown formatting displayed as I expected, I created the repository [datadog_test](https://github.com/bradleyjay/datadog_test). I tried two methods to embed images from github's "Mastering Markdown" [guide.](https://guides.github.com/features/mastering-markdown/)
 
