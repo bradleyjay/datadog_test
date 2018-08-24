@@ -341,7 +341,7 @@ To pull my Python script from the Vagrant VM, I first installed vagrant-scp (as 
     vagrant plugin install vagrant-scp
     vagrant scp :/etc/datadog-agent/dog/my_first_timeboard.py ./
 
-To be explicit, the Python script I used to create this timeboard is at the path ```pythonScripts/my_first_timeboard.py```, and embeded via link and codeblock, here:
+To be explicit, the Python script I used to create this timeboard is at the path ```dog/my_first_timeboard.py```, and embeded via link and codeblock, here:
 
 [Python Script for Timeboard: Github Link](pythonScripts/my_first_timeboard.py)
 
@@ -429,6 +429,279 @@ The Anomaly graph here is displaying a region on either side of the current valu
 ### - Alerting threshold of 800
 ### - And also ensure that it will notify you if there is No Data for this query over the past 10m.
 
-To create a Metric Monitor ([documentation](https://docs.datadoghq.com/monitors/monitor_types/metric/)),
+To create a Metric Monitor ([documentation](https://docs.datadoghq.com/monitors/monitor_types/metric/)), I navigated to Monitors > New Monitor > Metric in the Datadog web interface. I chose my detection method, defined my metric as the single value (removing avg() from the monitor query) reported by my_metric, set my Warning and Alerting Thresholds, and enabled **Notify** for missing data after ten minutes:
 
-# Next up, create that metric monitor in the UI, with warning and alert thresholds.
+![Alert Monitor Creation](images/3_1_MonitorAlert.png)
+
+### Please configure the monitor’s message so that it will:
+### - Send you an email whenever the monitor triggers.
+### - Include the metric value that caused the monitor to trigger and host ip when the Monitor triggers an Alert state.
+### - Create different messages based on whether the monitor is in an Alert, Warning, or No Data state.
+### - When this monitor sends you an email notification, take a screenshot of the email that it sends you.
+
+I configured the monitor's message to respond to Alerts, Warnings, and No Data events. Additionally, the monitor will email me when the threshold reaches a Warning or Alert.
+
+To configure the monitor's message, I referenced the *Use message template variables*  help under that same "Say what's happening" section. The documentation for notifications [documentation](https://docs.datadoghq.com/monitors/notifications/) provided helpful syntax as well. The ```Notify: @bradleyjshields@gmail.com``` also adds my email to the "Notify your team section." The monitor's message is:
+
+```
+{{#is_alert}} 
+ALERT: my_metric has averaged more than 800 for the last 5 minutes! 
+Host IP {{host.ip}} has reported an average value of  {{value}} during that time. Please take corrective action!
+{{/is_alert}}
+
+
+{{#is_warning}} Warning: Host IP {{host.ip}} reports that my_metric has averaged more than 500 for the last 5 minutes! {{/is_warning}}
+
+
+{{#is_no_data}} 
+Warning! No data has been reported by my_metric on Host IP {{host.ip}} in the last 10 minutes!
+{{/is_no_data}}
+
+Notify: @bradleyjshields@gmail.com
+```
+
+The email I recieved when the monitor threshold was reached was:
+
+![Alert Monitor Creation](images/3_2_EmailWarning.png)
+
+> **Bonus Question:** Since this monitor is going to alert pretty often, you don’t want to be alerted when you are out of the office. Set up two scheduled downtimes for this monitor:
+> - One that silences it from 7pm to 9am daily on M-F,
+> - And one that silences it all day on Sat-Sun.
+> - Make sure that your email is notified when you schedule the downtime and take a screenshot of that notification.
+
+The [guide](https://docs.datadoghq.com/monitors/downtimes/) for Scheduling monitor downtime recommends doing this through Monitors > Manage Downtime, then pressing the "Schedule Downtime" button. I chose to mute only this monitor, and so added ```host:ubuntu-xenial``` under "Group scope."
+
+Scheduled downtime for weekday evenings and mornings begins at 7:00 PM EST each night, and goes until 9:00 AM the following day:
+![Weekday Alert 1](images/3_3_Silence_Weekday1.png)
+
+And corresponding alert message:
+![Weekday Alert 2](images/3_3_Silence_Weekday2.png)
+
+For the weekend, Saturday morning will already be muted through 9:00 AM EST due to the weekday rule. Muting Saturday and Sunday only would overlap (probably not a problem) and leave Monday morning until 9:00 AM EST un-muted (actually a problem). As such, the weekend mute begins at 9:00 AM, and runs 24 hours, both Saturday and Sunday:
+![Weekend Alert 1](images/3_3_Silence_Weekend1.png)
+![Weekend Alert 2](images/3_3_Silence_Weekend2.png)
+
+These produced the emails:
+![Alert Mute Email: Weekday](images/3_3_WeekdayEmail.png)
+![Alert Mute Email: Weekend](images/3_3_WeekendEmail.png)
+
+## Collecting APM Data
+
+>Given the following Flask app (or any Python/Ruby/Go app of your choice) instrument this using Datadog’s APM solution:
+
+```python
+from flask import Flask
+import logging
+import sys
+
+# Have flask use stdout as the logger
+main_logger = logging.getLogger()
+main_logger.setLevel(logging.DEBUG)
+c = logging.StreamHandler(sys.stdout)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+c.setFormatter(formatter)
+main_logger.addHandler(c)
+
+app = Flask(__name__)
+
+@app.route('/')
+def api_entry():
+    return 'Entrypoint to the Application'
+
+@app.route('/api/apm')
+def apm_endpoint():
+    return 'Getting APM Started'
+
+@app.route('/api/trace')
+def trace_endpoint():
+    return 'Posting Traces'
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port='5050')
+```
+
+Applying Application Performance Monitoring (APM) requires using the Trace agent (which comes packaged with the Datadog agent in Linux). From the APM Agent [guide](https://docs.datadoghq.com/tracing/setup/),
+
+###### Step 1: Install the Datadog Agent
+
+*(Done previously)*
+
+###### Step 2: Install the Trace Agent
+
+On Linux the APM Agent is enabled by default, and "no extra configuration is needed." According to the github [repo](https://github.com/DataDog/datadog-trace-agent/#run-on-linux), simply running the Datadog Agent is enough. Configuration settings are found under apm_config in the ```/etc/datadog-agent/datadog.yaml```. 
+
+###### Step 3: Configure Your Environment
+
+Specifying a custom enviornment will allow all traces run through the APM to be grouped via an environment tag. To do that, I'll override the default env tag used by the trace Agent in the Agent config file. In the ```datadog.yaml```, I've uncommented then specified the environment as "pre-prod" with:
+
+    apm_config:
+      env: pre-prod
+
+To apply these changes, I restarted the Agent via ```sudo service datadog-agent restart```.
+
+###### Step 4: Instrument your Application
+
+Using the Tracing Python Applications [guide](https://docs.datadoghq.com/tracing/setup/python/),
+I first installed the Datadog Tracing library and Flask itself via: 
+
+    pip install ddtrace
+    pip install flask
+
+To include the middleware for Flask (recommended [here](http://pypi.datadoghq.com/trace/docs/#flask)), I've added import statements for ```tracer``` and ```TraceMiddleware```, while creating a Tracemiddleware object (all per the guide). 
+
+Additionally, I've installed the ```Blinker```library via ```pip install blinker```(required by Flask's middleware for signaling). Together, this yields the fully instrumented my-flask-app.py app (linked on github [here](????) as well):
+
+```python
+from flask import Flask
+import blinker as _                                   # blinker import
+from ddtrace import tracer                            # tracer import                      
+#from ddtrace.contrib.flask import TraceMiddleware     # TraceMiddleWare import
+import logging
+import sys
+
+# Have flask use stdout as the logger
+main_logger = logging.getLogger()
+main_logger.setLevel(logging.DEBUG)
+c = logging.StreamHandler(sys.stdout)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+c.setFormatter(formatter)
+main_logger.addHandler(c)
+
+app = Flask(__name__)
+
+# Create TraceMiddleware object
+#traced_app = TraceMiddleware(app, tracer, service="my-flask-app", distributed_tracing=False)
+
+
+@app.route('/')
+def api_entry():
+    return 'Entrypoint to the Application'
+
+@app.route('/api/apm')
+def apm_endpoint():
+    return 'Getting APM Started'
+
+@app.route('/api/trace')
+def trace_endpoint():
+    return 'Posting Traces'
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port='5050')
+```
+*Aside*: You'll note these lines commented:
+
+    #from ddtrace.contrib.flask import TraceMiddleware     # TraceMiddleWare import
+
+    # Create TraceMiddleware object
+    #traced_app = TraceMiddleware(app, tracer, service="my-flask-app", distributed_tracing=False)
+
+Running with just a manual ```python my-flask-app.py``` didn't work those commands, but *did* work with ```ddtrace-run python my-flask-app.py```.
+
+###### Step 5: Start monitoring your app's performance:
+
+First, I moved my local ```my-flask-app.py``` onto my Ubuntu VM by placing it into the same directory as the VM's Vagrantfile (as per this [stackoverflow](https://stackoverflow.com/questions/16704059/easiest-way-to-copy-a-single-file-from-host-to-vagrant-guest)). Then, the file is automatically available at the path ```/vagrant``` in the Vagrant VM.
+
+In the VM, as before, I changed the owner:group and provided priviledges with:
+
+    sudo chown dd-agent:dd-agent my-flask-app.py
+    sudo chmod 755 my-flask-app.py
+
+Then ran with ```python my-flask-app.py```. 
+
+I found consistent errors in the form of:
+
+    2018-08-23 07:11:46,050 - ddtrace.writer - ERROR - cannot send services to localhost:8126: [Errno 111] Connection refused
+
+Which a Datadog [article](https://docs.datadoghq.com/tracing/faq/why-am-i-getting-errno-111-connection-refused-errors-in-my-application-logs/) explained was the result of the Trace Agent listening somewhere other than where the tracer libraries submit by default. There are explicit directions for Docker, involving finding out where Docker was 
+
+From there, I navigated in-browser Datadog > APM.
+
+
+new plan: app should be working, its vagrant.
+
+map ports so 4999 on the VM goes to 4999 out to datadog, ie at the vagrant level?
+
+flask dials out via 
+
+(could also go configure docker for this....better documentation...)
+Port mismatch?
+
+closest so far:
+FLASK_APP=my-flask-app.py DATADOG_ENV=flask_test ddtrace-run flask run --port=4999
+
+```python
+from flask import Flask
+import blinker as _                                   # blinker import
+from ddtrace import tracer                            # tracer import                      
+#from ddtrace.contrib.flask import TraceMiddleware     # TraceMiddleWare import
+import logging
+import sys
+import random
+import time
+
+# Have flask use stdout as the logger
+main_logger = logging.getLogger()
+main_logger.setLevel(logging.DEBUG)
+c = logging.StreamHandler(sys.stdout)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+c.setFormatter(formatter)
+main_logger.addHandler(c)
+
+app = Flask(__name__)
+
+# Create TraceMiddleware object
+#traced_app = TraceMiddleware(app, tracer, service="my-flask-app", distributed_tracing=False)
+#traceNum = random.randint(1,3333)
+#time.sleep(2)
+
+@app.route('/')
+def api_entry():
+    return 'Entrypoint to the Application'
+
+@app.route('/api/apm')
+def apm_endpoint():
+    return 'Getting APM Started'
+
+@app.route('/api/trace')
+def trace_endpoint():
+    return 'Posting Traces'
+
+if __name__ == '__main__':
+#    app.run(host='127.0.0.1', port='8126')
+    app.run(host='0.0.0.0',port='5050')
+~                                                                                                    
+~                                                                                                    
+~                                                                                                    
+~                                                                     
+```
+Including using Vagrant port forwarding (```config.vm.network :forwarded_port, guest: 4999, host: 4998```)
+
+###### What didn't work:
+While I found several guides on running ```ddtrace-run python someapp.py```, and spent a fair amount of time with the supplied Python Flask app, I wasn't able to get tracer data properly working. ...
+
+Experimented with settings in ```/etc/datadog-agent/datadog.yaml```, changed permissions/ownership, eventually found that this worked. 
+
+I thought perhaps the tracer wasn't taking in data, but ruled tthat out with
+
+I wasn't sure if the issue was Vagrant's connectivity back to Datadog, but after Port Fowarding didn't fix the issue, and knowing that the other metric's graphed thus far worked told me the issue was in Flask. I don't know Flask that well, and after a fair time investment, started looking to build something simple from a base example instead.
+
+###### What worked:
+
+The only thing I could be sure of was that the example code in the Datadog Doc on [Python Tracing](https://docs.datadoghq.com/tracing/setup/python/) *did* work for me. I started there, and looked to see what I could add.
+
+From the ddtrace API [guide](http://pypi.datadoghq.com/trace/docs/#module-ddtrace.contrib.flask), I wrote my own *simple* "app."" I realized as I was building a test to understand the API that a sleep() command run with a random integer could work as a straightforward metric to trace. The ```ddtrace.tracer``` class method trace() is called to begin measuring execution time before the random-input sleep command runs, then finish() reports that span back to the Datadog APM. The script was run via ```ddtrace-run python my_fake_server.py``` to collect trace information:
+
+```python
+from ddtrace import tracer
+import time
+import random
+
+while True:
+    span = tracer.trace("My_Interval",service="Fake_Serv")
+    time.sleep(random.randint(15,25))
+    span.finish()
+```
+
+That information is reported as a Timeboard ([link](https://app.datadoghq.com/dash/897139/fakeserver-real-host-timeboard?live=true&page=0&is_auto=false&from_ts=1535098716060&to_ts=1535102316060&tile_size=m&fullscreen=false), as:
+
+![Timeboard: APM and Infrastruture Metrics](images/5_5_Timeboard.png)
