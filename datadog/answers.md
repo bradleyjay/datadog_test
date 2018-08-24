@@ -11,17 +11,17 @@ With that, let's start.
 The first section is an initial test for markdown and image embedding syntax. Answers to the Challenge begin at "Prerequisites - Setup the Environment." 
 
 
-## Format Testing - Embedding Images:
+# Format Testing - Embedding Images:
 
 To be sure I knew how to embed my screenshots, and that my markdown formatting displayed as I expected, I created the repository [datadog_test](https://github.com/bradleyjay/datadog_test). I tried two methods to embed images from github's "Mastering Markdown" [guide.](https://guides.github.com/features/mastering-markdown/)
 
-###### Method 1: Absolute github path
+##### Method 1: Absolute github path
 
 ```![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)``` 
 
 This works, but that's not necessarily a static URL. Depending on the branch referenced, that URL grows to include the branch name, and "tree". That's risky as things change in the repo.
 
-###### Method 2: Relative github path
+##### Method 2: Relative github path
 
 ``` ![Sample Image](images/sample.jpg)```
 
@@ -35,7 +35,7 @@ As you can clearly see, here we have a prime example of Datadog. I can't wait to
 *Note: From here on out, directions directly from the challenge are placed in blockquote format. The answer for that task follows immediately in numbered steps, until the next blockquoted set of directions, where the next task begins.*
 
 
-## Section 0: Prerequisites - Setup the Environment
+# Section 0: Prerequisites - Setup the Environment
 ---
 > You can utilize any OS/host that you would like to complete this exercise. However, we recommend one of the following approaches:
 >   - You can spin up a fresh linux VM via Vagrant or other tools so that you don’t run into any OS or dependency issues. Here are instructions for setting up a Vagrant Ubuntu VM. We strongly recommend using minimum v. 16.04 to avoid dependency issues.
@@ -91,7 +91,7 @@ After a number of get, unpack, and install calls, the Datadog Agent reported it 
 Some useful [Agent Commands - Start, Stop, Restart](https://docs.datadoghq.com/agent/faq/agent-commands/#start-stop-restart-the-agent).
 
 
-## Section 1: Collecting Metrics
+# Section 1: Collecting Metrics
 ---
 > Add tags in the Agent config file and show us a screenshot of your host and its tags on the Host Map page in Datadog.
 ---
