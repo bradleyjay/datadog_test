@@ -179,7 +179,7 @@ Which then yields an "access denied" error, as expected. To grant the necessary 
     mysql> GRANT REPLICATION CLIENT ON *.* TO 'datadog'@'localhost' WITH MAX_USER_CONNECTIONS 5;
     mysql> GRANT PROCESS ON *.* TO 'datadog'@'localhost';
 
-###### Step 2b: Install the Corresponding Integration for that Database (MySQL) - Enabling Metric Collection
+##### Step 2b: Install the Corresponding Integration for that Database (MySQL) - Enabling Metric Collection
 To enable metric collection from the performance_schema database:
 
     mysql> show databases like 'performance_schema';
@@ -193,7 +193,7 @@ Now, we can modify to ```mysql.d/conf.yaml```, replacing the commented-out lines
 
 *Aside: After restarting the Agent, I notice in the Datadog dashboard that I can't see my MySQL integration info on my host in Hostmap. I was curious before, when my tags didn't show up in the HostMap, despite being set in my config.yaml file. ```sudo datadog-agent status``` reports that it cannot load the Datadog config file, specifically related to mapping values under the "host tags" section. Opening the config.yaml, I see that I've left an extra space in-between one of my tag key:value pairs. After fixing that, then running ```sudo service datadog-agent start```, and finally the status query again, I can see the Agent is up and running correctly, this time. At this point, I've gone back and updated the HostMap image for my answer under Part 1 of this section, "Collecting Metrics."*
 
-###### Step 2c: Install the Corresponding Integration for that Database (MySQL) - Allow Agent Communication with MySQL
+##### Step 2c: Install the Corresponding Integration for that Database (MySQL) - Allow Agent Communication with MySQL
 With that complete, the final step was to add the MySQL Integration for Datadog in-browser, and allow the Agent to connect to MySQL. Following the MySQL Integration [guide](https://app.datadoghq.com/account/settings#integrations/mysql), the remaining step was to create the conf.d/mysql.yaml file as per:
 
     init_config:
@@ -223,7 +223,11 @@ And, finally, I pressed the MySQL "Install Integration" button, completing the I
 
 ![Hostmap With MySQL](images/1_2c_HostmapUpdate.png)
 
-### - Create a custom Agent check that submits a metric named my_metric with a random value between 0 and 1000.
+---
+> *Create a custom Agent check that submits a metric named my_metric with a random value between 0 and 1000.*
+---
+## Create an Agent Check
+##### Step 1: Create the check and metric, generate a random number
 
 From the Datadog Docs [Agent Checks](https://docs.datadoghq.com/developers/agent_checks/) section, found with the search function and a tiny amount of digging around for the relevant link, checks are handled through the AgentCheck interface. The documentation provides a simple tutorial.
 
@@ -234,6 +238,8 @@ I created my_metric.yaml in /etc/datadog-agent/conf.d, with a single instance:
 And a basic check python code in /etc/datadog-agent/checks.d, using random.randint() for the random number generation:
 
 ![my_metric.py](images/1_3_my_metric_py.png)
+
+##### Step 2: Run and verify the check
 
 I restarted the Agent via ```sudo service datadog-agent restart``` , then used ```sudo -u dd-agent -- datadog-agent check my_metric``` to confirm the check was being run:
 
@@ -254,7 +260,10 @@ And finally, the metric reported from the random.randint() line uncommented in m
 
 ![Metric Check Rand](images/1_3_metricValRand.png)
 
-### - Change your check's collection interval so that it only submits the metric once every 45 seconds.
+---
+> *Change your check's collection interval so that it only submits the metric once every 45 seconds.*
+---
+## Modify check's collection interval
 
 I modified my_metric.yaml located at ```/etc/datadog-agent/conf.d``` to include a min_collection_interval of 45 seconds:
 
@@ -264,15 +273,17 @@ After restarting the service, the metric is reported roughly half as frequently:
 
 ![Min Collect Metric](images/1_4_minCollectMetric.png)
 
-### - Bonus Question Can you change the collection interval without modifying the Python check file you created?
-
-###### Without modifying the Python Script (my answer)
+---
+> *Bonus Question Can you change the collection interval without modifying the Python check file you created?*
+---
+## Modify the collection interval, specifically without touching Python
+##### __My Answer:__ Without modifying the Python Script 
 Modifying the .yaml file for a given check (located at ```/etc/datadog-agent/conf.d```) allows setting min_collection_interval. From the Agent checks [documentation](https://docs.datadoghq.com/developers/agent_checks/), if this value is greater than the interval time for the Agent collector, a line is added to the log noting that the metric was not collected. Each time the Collector runs, it compares the time since the check was last run, and if it's greater than the set value of min_collection_interval, it runs the check. 
 
 Otherwise, there are several options in the Agent config file, ```/etc/datadog-agent/datadog.yaml```. There are options for process-config and so on (Line 503), among others, but that's more specific than I think the question was intended to be.
 
-###### The Python Script way (as stated in the question, incorrect - I've added this here for context)
-The incorrect way to do this, to justify my above answer is as follows. The flush() method in the Gauge class does take *interval* as an argument. This is located in [aggregator.py](https://github.com/DataDog/dd-agent/blob/master/aggregator.py), in the dd-agent source code. In your Python script, you could directly set how often a given metric was flushed to Datadog:
+##### Incorrect (for context): The Python Script way
+The incorrect way to do this, to justify my above answer, is as follows. The flush() method in the Gauge class does take *interval* as an argument. This is located in [aggregator.py](https://github.com/DataDog/dd-agent/blob/master/aggregator.py), in the dd-agent source code. In your Python script, you could directly set how often a given metric was flushed to Datadog:
 
 ![Gauge](images/1_5_Gauge.png)
 
