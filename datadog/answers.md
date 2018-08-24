@@ -30,15 +30,23 @@ In this case, a relative path worked better for me because it allowed me to orga
 
 ![A Data Dog](images/ADataDog.jpg)
 
-As you can clearly see, here we have a prime example of a Datadog. As an aside, I think your business model is adorable. With image embedding out of the way, I'll set up the enviornment for the Coding Challenge.
+As you can clearly see, here we have a prime example of Datadog. I can't wait to work more with your product. With image embedding out of the way, I'll set up the enviornment for the Coding Challenge.
 
 *Note: on macOS, to screenshot, use Shift+CMD+4*
 
 
 ## Section 0: Prerequisites - Setup the Environment
 
-#### Initial VM Install and Launch
 
+*Note: From here on, directions directly from the challenge are placed here in blockquote format.*
+
+> 1. You can utilize any OS/host that you would like to complete this exercise. However, we recommend one of the following approaches:
+> - You can spin up a fresh linux VM via Vagrant or other tools so that you don’t run into any OS or dependency issues. Here are instructions for setting up a Vagrant Ubuntu VM. We strongly recommend using minimum v. 16.04 to avoid dependency issues.
+> - You can utilize a Containerized approach with Docker for Linux and our dockerized Datadog Agent image.
+>
+> 2. Then, sign up for Datadog (use “Datadog Recruiting Candidate” in the “Company” field), get the Agent reporting metrics from your local machine.
+
+#### Initial VM Install and Launch
 Having used Docker briefly before, I was curious to learn about Vagrant. I followed the [guide](https://www.vagrantup.com/intro/getting-started/) for setting up a Vagrant Virtual Machine(VM) project:
 - Downloaded and installed [Vagrant](https://www.vagrantup.com/downloads.html) 2.1.2 for macOS.
 - Per Vagrant's recommendation, updated my [VirtualBox](https://www.virtualbox.org/wiki/Downloads) install to 5.2.18. 
