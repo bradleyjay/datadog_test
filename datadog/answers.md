@@ -36,10 +36,10 @@ As you can clearly see, here we have a prime example of Datadog. I can't wait to
 
 
 ## Section 0: Prerequisites - Setup the Environment
+
 > You can utilize any OS/host that you would like to complete this exercise. However, we recommend one of the following approaches:
 >   - You can spin up a fresh linux VM via Vagrant or other tools so that you don’t run into any OS or dependency issues. Here are instructions for setting up a Vagrant Ubuntu VM. We strongly recommend using minimum v. 16.04 to avoid dependency issues.
 >   - You can utilize a Containerized approach with Docker for Linux and our dockerized Datadog Agent image.
-
 ##### Step 1: Initial VM Install and Launch
 
 Having used Docker briefly before, I was curious to learn about Vagrant. I followed the [guide](https://www.vagrantup.com/intro/getting-started/) for setting up a Vagrant Virtual Machine(VM) project:
@@ -53,7 +53,7 @@ Then, I tested launching the VM via
 
 And confirmed successful access to the VM via ```vagrant ssh```. 
 
-###### Step 2: VM Customization
+##### Step 2: VM Customization
 
 With our VM up and running, that's great, but the DataDog coding challenge specifically recommends running Ubuntu v.16.04. By default, Vagrant VM boots into Ubuntu 12.04 LTS. Let's change that to ensure our dependencies are in-line for the Datadog Agent.
 
@@ -68,8 +68,8 @@ Vagrant base images are called "boxes," and cloning one is how a VirtualBox envi
  I then ran a ```vagrant up```, which downloaded the new 16.04 LTS box and started our new server. Finally, ```vagrant ssh``` brought me into the new version of the box. Upon launch, there is a message about Ubuntu 18.04.1 LTS being available, but I wanted to use 16.04 LTS unless I find stability or dependency issues. The Ubuntu 16.04 LTS box has *many* more downloads, so the odds seem good that it's a stable release, despite being a daily build.
 
 
->Then, sign up for Datadog (use “Datadog Recruiting Candidate” in the “Company” field), get the Agent reporting metrics from your local machine.
 
+>Then, sign up for Datadog (use “Datadog Recruiting Candidate” in the “Company” field), get the Agent reporting metrics from your local machine.
 ###### Datadog Agent Signup
 
 As instructed, I signed up for Datadog as a "Datadog Recruiting Candidate", then informed Datadog about my stack (Python, MySQL, GitHub, Slack). For the Agent Setup, I chose Ubuntu (since we'll be using our VM, not my local macOS), and applied the provided command to our Vagrant box:
@@ -91,12 +91,12 @@ Some useful [Agent Commands - Start, Stop, Restart](https://docs.datadoghq.com/a
 
 
 ## Section 1: Collecting Metrics
-### - Add tags in the Agent config file and show us a screenshot of your host and its tags on the Host Map page in Datadog.
+> Add tags in the Agent config file and show us a screenshot of your host and its tags on the Host Map page in Datadog.
 
-###### Step 1: Find the Agent config file
+##### Step 1: Find the Agent config file
 At this point, I went to the Datadog [overview](https://docs.datadoghq.com/) documentation, and opened up the Agent section. Selecting [Ubuntu](https://docs.datadoghq.com/agent/basic_agent_usage/ubuntu/) and reading down the page, the Agent config file location is listed. Looking through the Datadog Agent Installer output in my VM terminal window, I could see Agent V6 was installed, not V5. The Agent config file is therefore located at ```/etc/datadog-agent/datadog.yaml```.
 
-###### Step 2: Add tags to the config file.
+##### Step 2: Add tags to the config file.
 By searching the Datadog Docs documentation for **tags**, I found an [article](https://docs.datadoghq.com/tagging/assigning_tags/) on assigning tags. ["Getting Started With Tags"](https://docs.datadoghq.com/tagging/#tags-best-practices) had some recommendations for useful tags and notes on formatting.
 
 I attempted to use **vi** to open the datadog.yaml, but was denied due to permissions. **Sudo** let me through. Using **/tags** to find the section on tags, I set the following:
