@@ -42,7 +42,8 @@ As you can clearly see, here we have a prime example of Datadog. I can't wait to
   - *You can spin up a fresh linux VM via Vagrant or other tools so that you don’t run into any OS or dependency issues. Here are instructions for setting up a Vagrant Ubuntu VM. We strongly recommend using minimum v. 16.04 to avoid dependency issues.*
   - *You can utilize a Containerized approach with Docker for Linux and our dockerized Datadog Agent image.*
 ---
-
+  
+    
 ##### Step 1: Initial VM Install and Launch
 
 Having used Docker briefly before, I was curious to learn about Vagrant. I followed the [guide](https://www.vagrantup.com/intro/getting-started/) for setting up a Vagrant Virtual Machine(VM) project:
