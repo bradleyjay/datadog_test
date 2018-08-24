@@ -32,7 +32,7 @@ In this case, a relative path worked better for me because it allowed me to orga
 
 As you can clearly see, here we have a prime example of Datadog. I can't wait to work with your product more. With image embedding out of the way, I'll set up the enviornment for the Coding Challenge.
 
-*Note: From here on out, directions directly from the challenge are placed in blockquote format. The answer for that task follows immediately in numbered steps, until the next blockquoted set of directions, where the next task begins.*
+*Note: From here on out, directions directly from the challenge are placed in italics in a block. The answer for that task follows immediately in numbered steps.*
 
 
 # Prerequisites - Setup the Environment
@@ -72,8 +72,7 @@ Vagrant base images are called "boxes," and cloning one is how a VirtualBox envi
  I then ran a ```vagrant up```, which downloaded the new 16.04 LTS box and started our new server. Finally, ```vagrant ssh``` brought me into the new version of the box. Upon launch, there is a message about Ubuntu 18.04.1 LTS being available, but I wanted to use 16.04 LTS unless I find stability or dependency issues. The Ubuntu 16.04 LTS box has *many* more downloads, so the odds seem good that it's a stable release, despite being a daily build.  
   
 ---
-*Then, sign up for Datadog (use “Datadog Recruiting Candidate” in the “Company” field), get the Agent reporting metrics from your local machine.*
-
+>Then, sign up for Datadog (use “Datadog Recruiting Candidate” in the “Company” field), get the Agent reporting metrics from your local machine.
 ---
 
 ##### Step 1: Datadog Agent Signup
