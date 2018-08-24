@@ -38,7 +38,7 @@ As you can clearly see, here we have a prime example of Datadog. I can't wait to
 # Prerequisites - Setup the Environment
 
 **You can utilize any OS/host that you would like to complete this exercise. However, we recommend one of the following approaches:**
-  - **You can spin up a fresh linux VM via Vagrant or other tools so that you don’t run into any OS or dependency issues. Here are instructions for setting up a Vagrant Ubuntu VM. We strongly recommend using minimum v. 16.04 to avoid dependency issues.
+  - **You can spin up a fresh linux VM via Vagrant or other tools so that you don’t run into any OS or dependency issues. Here are instructions for setting up a Vagrant Ubuntu VM. We strongly recommend using minimum v. 16.04 to avoid dependency issues.**
   - **You can utilize a Containerized approach with Docker for Linux and our dockerized Datadog Agent image.**
 ---
 ##### Step 1: Initial VM Install and Launch
@@ -92,9 +92,9 @@ Some useful [Agent Commands - Start, Stop, Restart](https://docs.datadoghq.com/a
 
 
 # Section 1: Collecting Metrics
+*Add tags in the Agent config file and show us a screenshot of your host and its tags on the Host Map page in Datadog.*
 ---
-> Add tags in the Agent config file and show us a screenshot of your host and its tags on the Host Map page in Datadog.
----
+
 ##### Step 1: Find the Agent config file
 At this point, I went to the Datadog [overview](https://docs.datadoghq.com/) documentation, and opened up the Agent section. Selecting [Ubuntu](https://docs.datadoghq.com/agent/basic_agent_usage/ubuntu/) and reading down the page, the Agent config file location is listed. Looking through the Datadog Agent Installer output in my VM terminal window, I could see Agent V6 was installed, not V5. The Agent config file is therefore located at ```/etc/datadog-agent/datadog.yaml```.
 
