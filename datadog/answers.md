@@ -1,29 +1,36 @@
 # Datadog Coding Challenge - Bradley Shields
 
-Hello Datadog, here is my livedoc created while completing the Coding Challenge. The first section covers my initial test for markdown and image embedding, the answers begin at "Prerequisites - Setup the Environment." 
+Hello Datadog, here is my livedoc I created while completing the Datadog Coding Challenge. It was suggested that I document my thought process, steps that worked, those that didn't, and so on. I've positioned the detail level of my answers to be somewhere around that of a workflow you might send a client who is familiar, but maybe needs guidance -  enough detail to reproduce results, even through sub-steps like installing other packages, and so on. 
 
-Thank you for the opportunity to interview. I hope to speak with you again soon.
+I know that you all are extremely familiar, but I thought a detailed account would make a useful reference and show my thought process well. I've enjoyed this challenge and learned a few things from it; thank you for the opportunity.
+
+With that, let's start.
+
+---
+
+The first section is an initial test for markdown and image embedding syntax. Answers to the Challenge begin at "Prerequisites - Setup the Environment." 
+
 
 ## Format Testing - Embedding Images:
 
 To be sure I knew how to embed my screenshots, and that my markdown formatting displayed as I expected, I created the repository [datadog_test](https://github.com/bradleyjay/datadog_test). I tried two methods to embed images from github's "Mastering Markdown" [guide.](https://guides.github.com/features/mastering-markdown/)
 
-1. Absolute github path
+###### Method 1: Absolute github path
 
 ```![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)``` 
 
 This works, but that's not necessarily a static URL. Depending on the branch referenced, that URL grows to include the branch name, and "tree". That's risky as things change in the repo.
 
-2. Relative github path
+###### Method 2: Relative github path
 
-``` ![Tormund](images/tormund.jpg)```
+``` ![Sample Image](images/sample.jpg)```
 
 
-In this case, a relative path works better because it moves with the README.md in a given branch, which in this case is where I'm embedding the image. And so,
+In this case, a relative path worked better for me because it allowed me to organize and update images locally within the repo, all in one location. And so,
 
-![Tormund Giantsbane](images/tormund.jpeg)
+![A Data Dog](images/ADataDog.jpeg)
 
-Check complete! There's our fearless leader, Tormund Giantsbane (ginger beards of the world, unite!) Now, to set up the enviornment for the Coding Challenge.
+As you can clearly see, here we have a prime example of a Datadog. As an aside, I think your business model is adorable. With image embedding out of the way, I'll set up the enviornment for the Coding Challenge.
 
 *Note: on macOS, to screenshot, use Shift+CMD+4*
 
