@@ -38,15 +38,12 @@ As you can clearly see, here we have a prime example of Datadog. I can't wait to
 ## Section 0: Prerequisites - Setup the Environment
 
 
-*Note: From here on, directions directly from the challenge are placed here in blockquote format, with tasks numbered.*
+*Note: Directions directly from the challenge are placed here in blockquote format. The answer for that task follows immediately in numbered steps, until the next blockquoted set of directions.*
 
-> 1. You can utilize any OS/host that you would like to complete this exercise. However, we recommend one of the following approaches:
+> You can utilize any OS/host that you would like to complete this exercise. However, we recommend one of the following approaches:
 >     - You can spin up a fresh linux VM via Vagrant or other tools so that you don’t run into any OS or dependency issues. Here are instructions for setting up a Vagrant Ubuntu VM. We strongly recommend using minimum v. 16.04 to avoid dependency issues.
 >     - You can utilize a Containerized approach with Docker for Linux and our dockerized Datadog Agent image.
->
-> 2. Then, sign up for Datadog (use “Datadog Recruiting Candidate” in the “Company” field), get the Agent reporting metrics from your local machine.
 
-#### __1. Spin up a Linux VM or Docker Container__
 ###### Step 1: Initial VM Install and Launch
 
 Having used Docker briefly before, I was curious to learn about Vagrant. I followed the [guide](https://www.vagrantup.com/intro/getting-started/) for setting up a Vagrant Virtual Machine(VM) project:
@@ -60,7 +57,7 @@ Then, I tested launching the VM via
 
 And confirmed successful access to the VM via ```vagrant ssh```. 
 
-#### Task 1b: VM Customization
+###### Step 2: VM Customization
 
 With our VM up and running, that's great, but the DataDog coding challenge specifically recommends running Ubuntu v.16.04. By default, Vagrant VM boots into Ubuntu 12.04 LTS. Let's change that to ensure our dependencies are in-line for the Datadog Agent.
 
@@ -75,7 +72,9 @@ Vagrant base images are called "boxes," and cloning one is how a VirtualBox envi
  I then ran a ```vagrant up```, which downloaded the new 16.04 LTS box and started our new server. Finally, ```vagrant ssh``` brought me into the new version of the box. Upon launch, there is a message about Ubuntu 18.04.1 LTS being available, but I wanted to use 16.04 LTS unless I find stability or dependency issues. The Ubuntu 16.04 LTS box has *many* more downloads, so the odds seem good that it's a stable release, despite being a daily build.
 
 
-#### Datadog Agent Signup
+>Then, sign up for Datadog (use “Datadog Recruiting Candidate” in the “Company” field), get the Agent reporting metrics from your local machine.
+
+###### Datadog Agent Signup
 
 As instructed, I signed up for Datadog as a "Datadog Recruiting Candidate", then informed Datadog about my stack (Python, MySQL, GitHub, Slack). For the Agent Setup, I chose Ubuntu (since we'll be using our VM, not my local macOS), and applied the provided command to our Vagrant box:
 
@@ -91,9 +90,8 @@ After a number of get, unpack, and install calls, the Datadog Agent reported it 
 
         ```sudo systemctl start datadog-agent```
 
-#### Useful Links
 
-[Agent Commands - Start, Stop, Restart](https://docs.datadoghq.com/agent/faq/agent-commands/#start-stop-restart-the-agent)
+Some useful [Agent Commands - Start, Stop, Restart](https://docs.datadoghq.com/agent/faq/agent-commands/#start-stop-restart-the-agent).
 
 
 ## Section 1: Collecting Metrics
