@@ -92,8 +92,7 @@ Some useful [Agent Commands - Start, Stop, Restart](https://docs.datadoghq.com/a
 
 
 # Section 1: Collecting Metrics
-
-*Add tags in the Agent config file and show us a screenshot of your host and its tags on the Host Map page in Datadog.*
+## *Add tags in the Agent config file and show us a screenshot of your host and its tags on the Host Map page in Datadog.*
 ---
 
 ##### Step 1: Find the Agent config file
