@@ -11,7 +11,7 @@ With that, let's start.
 The first section is an initial test for markdown and image embedding syntax. Answers to the Challenge begin at "Prerequisites - Setup the Environment." 
 
 
-# Format Testing - Embedding Images:
+## Format Testing - Embedding Images:
 
 To be sure I knew how to embed my screenshots, and that my markdown formatting displayed as I expected, I created the repository [datadog_test](https://github.com/bradleyjay/datadog_test). I tried two methods to embed images from github's "Mastering Markdown" [guide.](https://guides.github.com/features/mastering-markdown/)
 
@@ -30,14 +30,10 @@ In this case, a relative path worked better for me because it allowed me to orga
 
 ![A Data Dog](images/ADataDog.jpg)
 
-As you can clearly see, here we have a prime example of Datadog. I can't wait to work with your product more. With image embedding out of the way, I'll set up the enviornment for the Coding Challenge.
-
-Note: From here on out, directions directly from the challenge are placed in italics in a block.
+As you can clearly see, here we have a prime example of Datadog. I can't wait to work with your product more. With image embedding out of the way, I'll set up the enviornment for the **Coding Challenge.**
 
 
 # Prerequisites - Setup the Environment
-
-
 
 *You can utilize any OS/host that you would like to complete this exercise. However, we recommend one of the following approaches:*
   - *You can spin up a fresh linux VM via Vagrant or other tools so that you don’t run into any OS or dependency issues. Here are instructions for setting up a Vagrant Ubuntu VM. We strongly recommend using minimum v. 16.04 to avoid dependency issues.*
