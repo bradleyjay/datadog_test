@@ -46,7 +46,8 @@ As you can clearly see, here we have a prime example of Datadog. I can't wait to
 >
 > 2. Then, sign up for Datadog (use “Datadog Recruiting Candidate” in the “Company” field), get the Agent reporting metrics from your local machine.
 
-#### Initial VM Install and Launch
+#### Task 1a: Initial VM Install and Launch
+
 Having used Docker briefly before, I was curious to learn about Vagrant. I followed the [guide](https://www.vagrantup.com/intro/getting-started/) for setting up a Vagrant Virtual Machine(VM) project:
 - Downloaded and installed [Vagrant](https://www.vagrantup.com/downloads.html) 2.1.2 for macOS.
 - Per Vagrant's recommendation, updated my [VirtualBox](https://www.virtualbox.org/wiki/Downloads) install to 5.2.18. 
@@ -56,9 +57,9 @@ Then, I tested launching the VM via
     vagrant init hashicorp/precise64
     vagrant up 
 
-And accessed the VM via ```vagrant ssh```. We're in, great news.
+And confirmed successful access to the VM via ```vagrant ssh```. 
 
-#### VM Customization
+#### Task 1b: VM Customization
 
 With our VM up and running, that's great, but the DataDog coding challenge specifically recommends running Ubuntu v.16.04. By default, Vagrant VM boots into Ubuntu 12.04 LTS. Let's change that to ensure our dependencies are in-line for the Datadog Agent.
 
@@ -73,7 +74,7 @@ Vagrant base images are called "boxes," and cloning one is how a VirtualBox envi
  I then ran a ```vagrant up```, which downloaded the new 16.04 LTS box and started our new server. Finally, ```vagrant ssh``` brought me into the new version of the box. Upon launch, there is a message about Ubuntu 18.04.1 LTS being available, but I wanted to use 16.04 LTS unless I find stability or dependency issues. The Ubuntu 16.04 LTS box has *many* more downloads, so the odds seem good that it's a stable release, despite being a daily build.
 
 
-#### Datadog Agent Setup
+#### Datadog Agent Signup
 
 As instructed, I signed up for Datadog as a "Datadog Recruiting Candidate", then informed Datadog about my stack (Python, MySQL, GitHub, Slack). For the Agent Setup, I chose Ubuntu (since we'll be using our VM, not my local macOS), and applied the provided command to our Vagrant box:
 
