@@ -44,7 +44,7 @@ Note: From here on out, directions directly from the challenge are placed in ita
   - *You can utilize a Containerized approach with Docker for Linux and our dockerized Datadog Agent image.*
 ---
   
-### Virtual Machine Setup
+## Virtual Machine Setup
 ##### Step 1: Initial VM Install and Launch
 
 Having used Docker briefly before, I was curious to learn about Vagrant. I followed the [guide](https://www.vagrantup.com/intro/getting-started/) for setting up a Vagrant Virtual Machine(VM) project:
@@ -98,9 +98,11 @@ Some useful [Agent Commands - Start, Stop, Restart](https://docs.datadoghq.com/a
 
 
 # Section 1: Collecting Metrics
-## *Add tags in the Agent config file and show us a screenshot of your host and its tags on the Host Map page in Datadog.*
----
 
+*Add tags in the Agent config file and show us a screenshot of your host and its tags on the Host Map page in Datadog.*
+
+---
+## Adding Host Tags
 ##### Step 1: Find the Agent config file
 At this point, I went to the Datadog [overview](https://docs.datadoghq.com/) documentation, and opened up the Agent section. Selecting [Ubuntu](https://docs.datadoghq.com/agent/basic_agent_usage/ubuntu/) and reading down the page, the Agent config file location is listed. Looking through the Datadog Agent Installer output in my VM terminal window, I could see Agent V6 was installed, not V5. The Agent config file is therefore located at ```/etc/datadog-agent/datadog.yaml```.
 
@@ -118,15 +120,16 @@ I attempted to use **vi** to open the datadog.yaml, but was denied due to permis
         tags: machine_name:VagrantVM_Ubuntu1604LTS, region:eastus, env:prod, role:database 
 
 
-###### Step 3: Find Hostmap in Datadog, provide screenshot
+##### Step 3: Find Hostmap in Datadog, provide screenshot
 Back in the browser walk-through for setting up Datadog, from my notes on the Datadog 101 - 1 - Overview [video](https://www.youtube.com/watch?v=uI3YN_cnahk) the Hostmap should be in the Sidebar menu. From **Infrastructure > Hostmap**, note the tags present in the right hand of the pane displaying info about our Ubuntu VM host - they match those added in datadog.yaml: 
 
 ![Hostmap with VM, tags](images/1_1_Hostmap.png)
 
-
-### - Install a database on your machine (MongoDB, MySQL, or PostgreSQL) and then install the respective Datadog integration for that database.
-
-###### Step 1: Install a database (MySQL)
+---
+> *Install a database on your machine (MongoDB, MySQL, or PostgreSQL) and then install the respective Datadog integration for that database.*
+---
+## Database Installation and Integration
+##### Step 1: Install a database (MySQL)
 
 Following the Debian/Ubuntu apt-get install workflow [guide](https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/#apt-repo-fresh-install), I installed via ```sudo apt-get install mysql-server```, and left the root password blank. Of course, that's not secure, but for the proof of concept we're doing here, simplicity seemed wise. I found this [guide](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-16-04) useful as well.
 
@@ -152,7 +155,7 @@ The solution is to grant permissions to the user and use SQL that way (i.e., as 
 
 Then, ```mysqladmin -u vagrant version``` correctly outputs the version, indicating that our MySQL service is up, running, and user accessible. ```mysql -u vagrant``` can now get us to the MySQL monitor to interact with our MySQL service as necessary.
 
-###### Step 2a: Install the Corresponding Integration for that Database (MySQL) - Preparing MySQL
+##### Step 2a: Install the Corresponding Integration for that Database (MySQL) - Preparing MySQL
 
 From the [MySQL Integration Documentation](https://docs.datadoghq.com/integrations/mysql/), MySQL integration comes with the Datadog Agent installation. For configuration, ```conf.d/mysql.d/conf.yaml``` must be editted in the Agent's [configuration directory](https://docs.datadoghq.com/agent/faq/agent-configuration-files/#agent-configuration-directory), which for Linux is ```/etc/datadog-agent/conf.d/```.
 
