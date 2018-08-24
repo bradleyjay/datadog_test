@@ -46,8 +46,8 @@ As you can clearly see, here we have a prime example of Datadog. I can't wait to
 >
 > 2. Then, sign up for Datadog (use “Datadog Recruiting Candidate” in the “Company” field), get the Agent reporting metrics from your local machine.
 
-#### Task 1 Spin up a Linux VM or Docker Container
-##### Step 1: Initial VM Install and Launch
+#### 1: Spin up a Linux VM or Docker Container
+###### Step 1: Initial VM Install and Launch
 
 Having used Docker briefly before, I was curious to learn about Vagrant. I followed the [guide](https://www.vagrantup.com/intro/getting-started/) for setting up a Vagrant Virtual Machine(VM) project:
 - Downloaded and installed [Vagrant](https://www.vagrantup.com/downloads.html) 2.1.2 for macOS.
