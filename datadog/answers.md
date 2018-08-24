@@ -37,14 +37,14 @@ Note: From here on out, directions directly from the challenge are placed in ita
 
 # Prerequisites - Setup the Environment
 
-### Virtual Machine Setup
+
 
 *You can utilize any OS/host that you would like to complete this exercise. However, we recommend one of the following approaches:*
   - *You can spin up a fresh linux VM via Vagrant or other tools so that you don’t run into any OS or dependency issues. Here are instructions for setting up a Vagrant Ubuntu VM. We strongly recommend using minimum v. 16.04 to avoid dependency issues.*
   - *You can utilize a Containerized approach with Docker for Linux and our dockerized Datadog Agent image.*
 ---
   
-
+#### Virtual Machine Setup
 ##### Step 1: Initial VM Install and Launch
 
 Having used Docker briefly before, I was curious to learn about Vagrant. I followed the [guide](https://www.vagrantup.com/intro/getting-started/) for setting up a Vagrant Virtual Machine(VM) project:
@@ -75,13 +75,14 @@ Vagrant base images are called "boxes," and cloning one is how a VirtualBox envi
 ---
 > *Then, sign up for Datadog (use “Datadog Recruiting Candidate” in the “Company” field), get the Agent reporting metrics from your local machine.*
 ---
-
-##### Step 1: Datadog Agent Signup
+#### Datadog and Agent Setup
+##### Step 1: Datadog Signup and Stack Specification
 
 As instructed, I signed up for Datadog as a "Datadog Recruiting Candidate", then informed Datadog about my stack (Python, MySQL, GitHub, Slack). For the Agent Setup, I chose Ubuntu (since we'll be using our VM, not my local macOS), and applied the provided command to our Vagrant box:
 
 ```DD_API_KEY=8677a7b08834961d73c4e0e22dbd6e07 bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent/master/cmd/agent/install_script.sh)"```
 
+##### Step 2: Agent Installation
 After a number of get, unpack, and install calls, the Datadog Agent reported it was running and functioning properly. For reference, the installer reported at the end:
 
     If you ever want to stop the Agent, run:
