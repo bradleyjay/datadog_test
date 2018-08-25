@@ -583,7 +583,7 @@ These produced the emails:
 
 # Section 4: Collecting APM Data
 
->Given the following Flask app (or any Python/Ruby/Go app of your choice) instrument this using Datadog’s APM solution:
+*Given the following Flask app (or any Python/Ruby/Go app of your choice) instrument this using Datadog’s APM solution:*
 
 ```python
 from flask import Flask
@@ -615,6 +615,8 @@ def trace_endpoint():
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='5050')
 ```
+
+---
 
 Applying Application Performance Monitoring (APM) requires using the Trace agent (which comes packaged with the Datadog agent in Linux). From the APM Agent [guide](https://docs.datadoghq.com/tracing/setup/),
 
