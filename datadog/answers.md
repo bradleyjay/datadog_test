@@ -323,7 +323,7 @@ In the Datadog web interface > Dashboards, I now see "My First Timeboard" on the
 and clicking on it, that it contains our example metric (Average Memory Free):
 
 ![My First Timeboard](images/2_0_MyFirstTimeboard.png)
-
+![BigGap](images/BigGap.png)
 ---
 > *(Make sure your timeboard contains:*)
 > - *Your custom metric scoped over your host.*
@@ -492,7 +492,7 @@ Generally, an [anomaly](https://docs.datadoghq.com/monitors/monitor_types/anomal
 The Anomaly graph here is displaying a region on either side of the current value of the reported metric. This represents the range of values within a set number (2, here) of standard deviations of the mean value, taken over some number of seconds set by a default rollup value, explained [here]([rollup](https://docs.datadoghq.com/monitors/monitor_types/anomaly/)), but I'm not sure what that default is. Because I've chosen the 'basic' algorithm, the anomaly is calculated with a "simple lagging quantile computation," i.e. no seasonal/longer term trend data.
 
 
-# Monitoring Data
+# Section 3: Monitoring Data
 
 *Since you’ve already caught your test metric going above 800 once, you don’t want to have to continually watch this dashboard to be alerted when it goes above 800 again. So let’s make life easier by creating a monitor.*
 
@@ -579,7 +579,7 @@ These produced the emails:
 
 
 
-# Collecting APM Data
+# Section 4: Collecting APM Data
 
 >Given the following Flask app (or any Python/Ruby/Go app of your choice) instrument this using Datadog’s APM solution:
 
