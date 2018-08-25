@@ -369,7 +369,7 @@ And the timeboard,
 
 Aggregate and rollup are covered in this [guide](https://docs.datadoghq.com/graphing/#aggregate-and-rollup). 
 
-**I tried:** Since previously I modified my_metric.yaml located at ```/etc/datadog-agent/conf.d``` to collect my_metric at (at minimum) 45 second intervals, to rollup data over the last hour, that's 80 points we need (3600 seconds * (1 data point/45 seconds)). I added another graph to plot the query ```"q": "my_metric{host:ubuntu-xenial}.rollup(sum,80)"```.
+**I tried (incorrectly):** Since previously I modified my_metric.yaml located at ```/etc/datadog-agent/conf.d``` to collect my_metric at (at minimum) 45 second intervals, to rollup data over the last hour, that's 80 points we need (3600 seconds * (1 data point/45 seconds)). I added another graph to plot the query ```"q": "my_metric{host:ubuntu-xenial}.rollup(sum,80)"```.
 
 **Correct way**: That's not quite right - the graph output looked far too low. The '80' value is *not* point count, it's time in seconds. As per the [documentation](https://docs.datadoghq.com/graphing/miscellaneous/functions/) on .rollup,
 
@@ -487,7 +487,7 @@ And there it is, in my gmail:
 > - ***Bonus Question:*** *What is the Anomaly graph displaying?*
 ---
 
-## What is the Anomaly graph displaying?**
+## What is the Anomaly graph displaying?
 Generally, an [anomaly](https://docs.datadoghq.com/monitors/monitor_types/anomaly/) uses algorithimic detection to compare a metric to it's past values, and can be configured to use historical data as well (time of day, day of the week patterns, and so on).
 
 The Anomaly graph here is displaying a region on either side of the current value of the reported metric. This represents the range of values within a set number (2, here) of standard deviations of the mean value, taken over some number of seconds set by a default rollup value, explained [here]([rollup](https://docs.datadoghq.com/monitors/monitor_types/anomaly/)), but I'm not sure what that default is. Because I've chosen the 'basic' algorithm, the anomaly is calculated with a "simple lagging quantile computation," i.e. no seasonal/longer term trend data.
@@ -557,6 +557,7 @@ Scheduled downtime for weekday evenings and mornings begins at 7:00 PM EST each 
 ![Weekday Alert 1](images/3_3_Silence_Weekday1.png)
 
 And corresponding alert message:
+
 ![Weekday Alert 2](images/3_3_Silence_Weekday2.png)
 
 ---
