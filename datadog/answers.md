@@ -463,13 +463,16 @@ api.Timeboard.create(title=title,
 ---
 > *Once this is created, access the Dashboard from your Dashboard List in the UI:*
 > - *Set the Timeboard's timeframe to the past 5 minutes*
-> - *Take a snapshot of this graph and use the @ notation to send it to yourself.*
-> - ***Bonus Question:*** *What is the Anomaly graph displaying?*
 ---
  
 ## Modify the timeboard: Set the timeframe to the past 5 minutes
 By selecting the last sliver of time on any graph using the mouse, the last five minutes are selected (as far as I can tell, that's the minimum displayable window): 
 ![UI Selection of last 5 minutes in timeBoard](images/2_4_Last5Min_InUI.png)
+
+---
+>*(Access the Dashboard in the UI:)*
+> - *Take a snapshot of this graph and use the @ notation to send it to yourself.*
+---
 
 ## Take a snapshot of this graph and use the @ notation to send it to yourself.
 Using the camera button in the top right of any graph, the option to take a snapshot comes forward. In that window, using @ suggests a list of users, from which I chose bradleyjshields@gmail.com:
@@ -478,7 +481,12 @@ Using the camera button in the top right of any graph, the option to take a snap
 And there it is, in my gmail:
 ![UI Selection of last 5 minutes in timeBoard](images/2_5_snapshot_email.png)
 
-## **Bonus Question Response: What is the Anomaly graph displaying?**
+---
+>*(Access the Dashboard in the UI:)*
+> - ***Bonus Question:*** *What is the Anomaly graph displaying?*
+---
+
+## What is the Anomaly graph displaying?**
 Generally, an [anomaly](https://docs.datadoghq.com/monitors/monitor_types/anomaly/) uses algorithimic detection to compare a metric to it's past values, and can be configured to use historical data as well (time of day, day of the week patterns, and so on).
 
 The Anomaly graph here is displaying a region on either side of the current value of the reported metric. This represents the range of values within a set number (2, here) of standard deviations of the mean value, taken over some number of seconds set by a default rollup value, explained [here]([rollup](https://docs.datadoghq.com/monitors/monitor_types/anomaly/)), but I'm not sure what that default is. Because I've chosen the 'basic' algorithm, the anomaly is calculated with a "simple lagging quantile computation," i.e. no seasonal/longer term trend data.
@@ -507,8 +515,8 @@ To create a Metric Monitor ([documentation](https://docs.datadoghq.com/monitors/
 > - *Create different messages based on whether the monitor is in an Alert, Warning, or No Data state.*
 > - *Include the metric value that caused the monitor to trigger and host ip when the Monitor triggers an Alert state.*
 > - *When this monitor sends you an email notification, take a screenshot of the email that it sends you.*
-
 ---
+
 ## Configure the Alert Monitor's Message: have a different email sent for an Alert(include metric, host ip), a Warning, and a No Data event. Show a screenshot.
 
 I configured the monitor's message to respond to Alerts, Warnings, and No Data events. Additionally, the monitor will email me when the threshold reaches a Warning or Alert.
