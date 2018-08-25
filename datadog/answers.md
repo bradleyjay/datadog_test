@@ -276,13 +276,13 @@ After restarting the service, the metric is reported roughly half as frequently:
 > *Bonus Question Can you change the collection interval without modifying the Python check file you created?*
 ---
 ## Modify the collection interval, specifically without touching Python
-##### __My Answer:__ Without modifying the Python Script 
-Modifying the .yaml file for a given check (located at ```/etc/datadog-agent/conf.d```) allows setting min_collection_interval. From the Agent checks [documentation](https://docs.datadoghq.com/developers/agent_checks/), if this value is greater than the interval time for the Agent collector, a line is added to the log noting that the metric was not collected. Each time the Collector runs, it compares the time since the check was last run, and if it's greater than the set value of min_collection_interval, it runs the check. 
+##### My Answer: Without modifying the Python Script 
+Modifying the ```.yaml``` file for a given check (located at ```/etc/datadog-agent/conf.d```) allows setting min_collection_interval. From the Agent checks [documentation](https://docs.datadoghq.com/developers/agent_checks/), if this value is greater than the interval time for the Agent collector, a line is added to the log noting that the metric was not collected. Each time the Collector runs, it compares the time since the check was last run, and if it's greater than the set value of min_collection_interval, it runs the check. 
 
 Otherwise, there are several options in the Agent config file, ```/etc/datadog-agent/datadog.yaml```. There are options for process-config and so on (Line 503), among others, but that's more specific than I think the question was intended to be.
 
-##### Incorrect (for context): The Python Script way
-The incorrect way to do this, to justify my above answer, is as follows. The flush() method in the Gauge class does take *interval* as an argument. This is located in [aggregator.py](https://github.com/DataDog/dd-agent/blob/master/aggregator.py), in the dd-agent source code. In your Python script, you could directly set how often a given metric was flushed to Datadog:
+###### Incorrect Answer (for context): The Python Script way
+The wrong way to do this, to justify my above answer, is as follows. The flush() method in the Gauge class does take *interval* as an argument. This is located in [aggregator.py](https://github.com/DataDog/dd-agent/blob/master/aggregator.py), in the dd-agent source code. In your Python script, you could directly set how often a given metric was flushed to Datadog:
 
 ![Gauge](images/1_5_Gauge.png)
 
@@ -483,22 +483,33 @@ Generally, an [anomaly](https://docs.datadoghq.com/monitors/monitor_types/anomal
 
 The Anomaly graph here is displaying a region on either side of the current value of the reported metric. This represents the range of values within a set number (2, here) of standard deviations of the mean value, taken over some number of seconds set by a default rollup value, explained [here]([rollup](https://docs.datadoghq.com/monitors/monitor_types/anomaly/)), but I'm not sure what that default is. Because I've chosen the 'basic' algorithm, the anomaly is calculated with a "simple lagging quantile computation," i.e. no seasonal/longer term trend data.
 
-## Monitoring Data
 
-### Create a new Metric Monitor that watches the average of your custom metric (my_metric) and will alert if it’s above the following values over the past 5 minutes:
-### - Warning threshold of 500
-### - Alerting threshold of 800
-### - And also ensure that it will notify you if there is No Data for this query over the past 10m.
+# Monitoring Data
 
-To create a Metric Monitor ([documentation](https://docs.datadoghq.com/monitors/monitor_types/metric/)), I navigated to Monitors > New Monitor > Metric in the Datadog web interface. I chose my detection method, defined my metric as the single value (removing avg() from the monitor query) reported by my_metric, set my Warning and Alerting Thresholds, and enabled **Notify** for missing data after ten minutes:
+*Since you’ve already caught your test metric going above 800 once, you don’t want to have to continually watch this dashboard to be alerted when it goes above 800 again. So let’s make life easier by creating a monitor.*
+
+*Create a new Metric Monitor that watches the average of your custom metric (my_metric) and will alert if it’s above the following values over the past 5 minutes:*
+
+- *Warning threshold of 500*
+- *Alerting threshold of 800*
+- *And also ensure that it will notify you if there is No Data for this query over the past 10m.*
+---
+
+## Create a Metric Monitor for my_metric, with Warning Threshold 500, Alerting Threshold 800
+
+To create a Metric Monitor ([documentation](https://docs.datadoghq.com/monitors/monitor_types/metric/)), I navigated to Monitors > New Monitor > Metric in the Datadog web interface. I chose my detection method, defined my metric as the single value (removing avg() from the monitor query, since that's an average over Hosts, not needed here) reported by my_metric, set my Warning and Alerting Thresholds, and enabled **Notify** for missing data after ten minutes:
 
 ![Alert Monitor Creation](images/3_1_MonitorAlert.png)
 
-### Please configure the monitor’s message so that it will:
-### - Send you an email whenever the monitor triggers.
-### - Include the metric value that caused the monitor to trigger and host ip when the Monitor triggers an Alert state.
-### - Create different messages based on whether the monitor is in an Alert, Warning, or No Data state.
-### - When this monitor sends you an email notification, take a screenshot of the email that it sends you.
+---
+> *Please configure the monitor’s message so that it will:*
+> - *Send you an email whenever the monitor triggers.*
+> - *Create different messages based on whether the monitor is in an Alert, Warning, or No Data state.*
+> - *Include the metric value that caused the monitor to trigger and host ip when the Monitor triggers an Alert state.*
+> - *When this monitor sends you an email notification, take a screenshot of the email that it sends you.*
+
+---
+## Configure the Alert Monitor's Message: have a different email sent for an Alert(include metric, host ip), a Warning, and a No Data event. Show a screenshot.
 
 I configured the monitor's message to respond to Alerts, Warnings, and No Data events. Additionally, the monitor will email me when the threshold reaches a Warning or Alert.
 
@@ -525,11 +536,12 @@ The email I recieved when the monitor threshold was reached was:
 
 ![Alert Monitor Creation](images/3_2_EmailWarning.png)
 
-> **Bonus Question:** Since this monitor is going to alert pretty often, you don’t want to be alerted when you are out of the office. Set up two scheduled downtimes for this monitor:
-> - One that silences it from 7pm to 9am daily on M-F,
-> - And one that silences it all day on Sat-Sun.
-> - Make sure that your email is notified when you schedule the downtime and take a screenshot of that notification.
+---
+> ***Bonus Question:*** *Since this monitor is going to alert pretty often, you don’t want to be alerted when you are out of the office. Set up two scheduled downtimes for this monitor:*
+> - *One that silences it from 7pm to 9am daily on M-F,*
+---
 
+## **Bonus Question Response:** Schedule Alert downtime: 7PM to 9AM, Monday-Friday
 The [guide](https://docs.datadoghq.com/monitors/downtimes/) for Scheduling monitor downtime recommends doing this through Monitors > Manage Downtime, then pressing the "Schedule Downtime" button. I chose to mute only this monitor, and so added ```host:ubuntu-xenial``` under "Group scope."
 
 Scheduled downtime for weekday evenings and mornings begins at 7:00 PM EST each night, and goes until 9:00 AM the following day:
@@ -538,15 +550,28 @@ Scheduled downtime for weekday evenings and mornings begins at 7:00 PM EST each 
 And corresponding alert message:
 ![Weekday Alert 2](images/3_3_Silence_Weekday2.png)
 
+---
+> *(Set up scheduled downtimes for this monitor:)*
+> - *One that silences it all day on Sat-Sun.*
+---
+## Schedule Alert downtime: Saturdays and Sundays
+
 For the weekend, Saturday morning will already be muted through 9:00 AM EST due to the weekday rule. Muting Saturday and Sunday only would overlap (probably not a problem) and leave Monday morning until 9:00 AM EST un-muted (actually a problem). As such, the weekend mute begins at 9:00 AM, and runs 24 hours, both Saturday and Sunday:
 ![Weekend Alert 1](images/3_3_Silence_Weekend1.png)
 ![Weekend Alert 2](images/3_3_Silence_Weekend2.png)
 
+---
+> *(Set up scheduled downtimes for this monitor:)*
+> - *Make sure that your email is notified when you schedule the downtime and take a screenshot of that notification.*
+---
+## Send an email when the downtime is scheduled and provide a screenshot
 These produced the emails:
 ![Alert Mute Email: Weekday](images/3_3_WeekdayEmail.png)
 ![Alert Mute Email: Weekend](images/3_3_WeekendEmail.png)
 
-## Collecting APM Data
+
+
+# Collecting APM Data
 
 >Given the following Flask app (or any Python/Ruby/Go app of your choice) instrument this using Datadog’s APM solution:
 
