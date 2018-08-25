@@ -324,10 +324,12 @@ and clicking on it, that it contains our example metric (Average Memory Free):
 
 ![My First Timeboard](images/2_0_MyFirstTimeboard.png)
 ![BigGap](images/BigGap.png)
+
 ---
 > *(Make sure your timeboard contains:*)
 > - *Your custom metric scoped over your host.*
 ---
+
 ## Add your custom metric scoped over your host to the timeboard
 
 From my example timeboard, I'll start building each feature that will get added to the timeboard by our ```api.Timeboard.create()``` call, as a graph. I did try implimenting this first as a call to send metrics directly via api.Metric.send() (detailed [here](https://docs.datadoghq.com/api/?lang=python#post-time-series-points)), but while that made the metric available on Datadog for my localhost, it didn't generate the graph as I intended. As I'm testing syntax, I'm deleting incorrect timeboards via the command
