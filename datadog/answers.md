@@ -323,7 +323,6 @@ In the Datadog web interface > Dashboards, I now see "My First Timeboard" on the
 and clicking on it, that it contains our example metric (Average Memory Free):
 
 ![My First Timeboard](images/2_0_MyFirstTimeboard.png)
-![BigGap](images/BigGap.png)
 
 ---
 > *(Make sure your timeboard contains:*)
