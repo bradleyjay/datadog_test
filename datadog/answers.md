@@ -5,8 +5,12 @@ Hello Datadog, here is my livedoc I created while completing the Datadog Coding 
 I know that you all are extremely familiar, but I thought a detailed account would make a useful reference and show my thought process well. I've enjoyed this challenge and learned a few things from it; thank you for the opportunity.
 
 With that, let's begin.
+  
 
----
+
+
+
+
 
 ## Format Testing - Embedding Images:
 
@@ -283,10 +287,13 @@ The incorrect way to do this, to justify my above answer, is as follows. The flu
 ![Gauge](images/1_5_Gauge.png)
 
 
-## Section 2: Visualizing Data
-### Utilize the Datadog API to create a Timeboard:
+# Section 2: Visualizing Data
+*Utilize the Datadog API to create a Timeboard...*
 
-###### Step 1: Setup Dogshell
+---
+
+## Create a timeboard
+##### Step 1: Setup Dogshell
 I opted to use the command-line interface for the Datadog API, described in the Dogshell [guide](https://docs.datadoghq.com/developers/faq/dogshell-quickly-use-datadog-s-api-from-terminal-shell/). To install it, I followed the dedicated [instructions](https://github.com/DataDog/datadogpy#installation). First, I installed pip from my Ubuntu VM command line:
 
     sudo apt-get install python-pip
@@ -299,7 +306,7 @@ I then tested my install via ```dog metric post test_metric 1```, and confirmed 
 
 When asked for my API key, I checked under the Datadog web interface > Integrations > APIs. The API key had been created already, through previous steps. I generated an APP key named my_app_key there, and entered them in response to the dogshell initialization query, which replied "Wrote /home/vagrant/.dogrc" to confirm the file creation.
 
-###### Step 2: Use Dogshell commands to create a Timeboard
+##### Step 2: Use Dogshell commands to create a Timeboard
 
 For the command to create my timeboard, I found the Datadog API [guide](https://docs.datadoghq.com/api/?lang=python#timeboards) section on Creating Timeboards. I created a Python script from the Example Request listed. I entered my API and APP keys (from the previous section), added a title, and named the file ```my_first_timeboard.py```:
 
@@ -317,8 +324,11 @@ and clicking on it, that it contains our example metric (Average Memory Free):
 
 ![My First Timeboard](images/2_0_MyFirstTimeboard.png)
 
-### ...a timeboard that contains:
-###  - Your custom metric scoped over your host.
+---
+> *(Make sure your timeboard contains:*)
+> - *Your custom metric scoped over your host.*
+---
+## Add your custom metric scoped over your host to the timeboard
 
 From my example timeboard, I'll start building each feature that will get added to the timeboard by our ```api.Timeboard.create()``` call, as a graph. I did try implimenting this first as a call to send metrics directly via api.Metric.send() (detailed [here](https://docs.datadoghq.com/api/?lang=python#post-time-series-points)), but while that made the metric available on Datadog for my localhost, it didn't generate the graph as I intended. As I'm testing syntax, I'm deleting incorrect timeboards via the command
 
@@ -333,7 +343,12 @@ This yields the timeboard:
 
 ![Timeboard with Metric added](images/2_1_Timeboard.png)
 
-### - Any metric from the Integration on your Database with the anomaly function applied.
+---
+> *(Make sure your timeboard contains:*)
+> - *Your custom metric scoped over your host.*
+> - *Any metric from the Integration on your Database with the anomaly function applied.*
+---
+## Add a metric from the MySQL Integration, include the anomaly function
 
 With the JSON guide in hand, this part is much easier. The anomaly function is added as simply wrapping the metric in the anomalies() function. Additionally, per the general anomaly monitor [guide](https://docs.datadoghq.com/monitors/monitor_types/anomaly/), I'll watch for values beyond two standard deviations from usual percentage of CPU time MySQL spends in user space:
 
@@ -343,7 +358,13 @@ And the timeboard,
 
 ![Timeboard with Metric2 added](images/2_2_Timeboard.png)
 
-### - Your custom metric with the rollup function applied to sum up all the points for the past hour into one bucket
+---
+> *(Make sure your timeboard contains:*)
+> - *Your custom metric scoped over your host.*
+> - *Any metric from the Integration on your Database with the anomaly function applied.*
+> - *Your custom metric with the rollup function applied to sum up all the points for the past hour into one bucket.*
+---
+## Add your custom metric, summed over the last hour
 
 Aggregate and rollup are covered in this [guide](https://docs.datadoghq.com/graphing/#aggregate-and-rollup). 
 
@@ -362,12 +383,18 @@ And the timeboard,
 
 ![Timeboard with Metric3 added](images/2_3_Timeboard.png) 
 
-### Please be sure, when submitting your hiring challenge, to include the script that you've used to create this Timeboard.
+---
+> *Please be sure, when submitting your hiring challenge, to include the script that you've used to create this Timeboard.*
+---
+## Submit your Timeboard Python script with the Coding Challenge
+##### Step 1: Transfer the Python Scirpt from Vagrant VM to your local host
 
 To pull my Python script from the Vagrant VM, I first installed vagrant-scp (as [recommended](https://medium.com/@smartsplash/using-scp-and-vagrant-scp-in-virtualbox-to-copy-from-guest-vm-to-host-os-and-vice-versa-9d2c828b6197})), then pulled the file to my local machine via:
 
     vagrant plugin install vagrant-scp
     vagrant scp :/etc/datadog-agent/dog/my_first_timeboard.py ./
+
+##### Step 2: Include the Python script
 
 To be explicit, the Python script I used to create this timeboard is at the path ```dog/my_first_timeboard.py```, and embeded via link and codeblock, here:
 
@@ -432,6 +459,8 @@ api.Timeboard.create(title=title,
                      read_only=read_only)
 
 ```
+
+# STOPPED HERE
 
 ### Once this is created, access the Dashboard from your Dashboard List in the UI:
 ### - Set the Timeboard's timeframe to the past 5 minutes
