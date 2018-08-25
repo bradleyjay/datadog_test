@@ -387,7 +387,7 @@ And the timeboard,
 > *Please be sure, when submitting your hiring challenge, to include the script that you've used to create this Timeboard.*
 ---
 ## Submit your Timeboard Python script with the Coding Challenge
-##### Step 1: Transfer the Python Scirpt from Vagrant VM to your local host
+##### Step 1: Transfer the Python Script from Vagrant VM to my local host
 
 To pull my Python script from the Vagrant VM, I first installed vagrant-scp (as [recommended](https://medium.com/@smartsplash/using-scp-and-vagrant-scp-in-virtualbox-to-copy-from-guest-vm-to-host-os-and-vice-versa-9d2c828b6197})), then pulled the file to my local machine via:
 
@@ -396,7 +396,7 @@ To pull my Python script from the Vagrant VM, I first installed vagrant-scp (as 
 
 ##### Step 2: Include the Python script
 
-To be explicit, the Python script I used to create this timeboard is at the path ```dog/my_first_timeboard.py```, and embeded via link and codeblock, here:
+The Python script I used to create this timeboard is at the path ```etc/datadog-agent/dog/my_first_timeboard.py```, and embeded via link and codeblock, here:
 
 [Python Script for Timeboard: Github Link](pythonScripts/my_first_timeboard.py)
 
@@ -460,21 +460,25 @@ api.Timeboard.create(title=title,
 
 ```
 
-# STOPPED HERE
-
-### Once this is created, access the Dashboard from your Dashboard List in the UI:
-### - Set the Timeboard's timeframe to the past 5 minutes
+---
+> *Once this is created, access the Dashboard from your Dashboard List in the UI:*
+> - *Set the Timeboard's timeframe to the past 5 minutes*
+> - *Take a snapshot of this graph and use the @ notation to send it to yourself.*
+> - ***Bonus Question:*** *What is the Anomaly graph displaying?*
+---
+ 
+## Modify the timeboard: Set the timeframe to the past 5 minutes
 By selecting the last sliver of time on any graph using the mouse, the last five minutes are selected (as far as I can tell, that's the minimum displayable window): 
 ![UI Selection of last 5 minutes in timeBoard](images/2_4_Last5Min_InUI.png)
 
-### - Take a snapshot of this graph and use the @ notation to send it to yourself.
+## Take a snapshot of this graph and use the @ notation to send it to yourself.
 Using the camera button in the top right of any graph, the option to take a snapshot comes forward. In that window, using @ suggests a list of users, from which I chose bradleyjshields@gmail.com:
  ![UI Selection of last 5 minutes in timeBoard](images/2_5_SnapshotWithAtNotation.png)
 
 And there it is, in my gmail:
 ![UI Selection of last 5 minutes in timeBoard](images/2_5_snapshot_email.png)
 
-### - Bonus Question: What is the Anomaly graph displaying?
+## **Bonus Question Response: What is the Anomaly graph displaying?**
 Generally, an [anomaly](https://docs.datadoghq.com/monitors/monitor_types/anomaly/) uses algorithimic detection to compare a metric to it's past values, and can be configured to use historical data as well (time of day, day of the week patterns, and so on).
 
 The Anomaly graph here is displaying a region on either side of the current value of the reported metric. This represents the range of values within a set number (2, here) of standard deviations of the mean value, taken over some number of seconds set by a default rollup value, explained [here]([rollup](https://docs.datadoghq.com/monitors/monitor_types/anomaly/)), but I'm not sure what that default is. Because I've chosen the 'basic' algorithm, the anomaly is calculated with a "simple lagging quantile computation," i.e. no seasonal/longer term trend data.
