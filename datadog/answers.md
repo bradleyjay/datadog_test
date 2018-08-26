@@ -655,9 +655,9 @@ Additionally, I've installed the ```Blinker```library via ```pip install blinker
 
 
 ---
-> *I attempted to use the supplied Flask app at this stage - I ended up getting stuck actually sending the Flask function Trace sent to Datadog. I'll discuss why. In the end, I wrote my own script using the ddtrace API to create my own fake "server" app to trace.*
+> *I attempted to use the supplied Flask app at this stage - I ended up getting stuck actually sending trace data from the Flask app's functions to Datadog. I'll discuss why. In the end, I wrote my own script using the ddtrace API to create my own fake "server" app to trace.*
 >
-> *I'll first describe what I tried with the Datadog-supplied App, then the app I succeeded with.*
+> *I'll first describe what I tried with the Datadog-supplied App, then the app I succeeded with. Please feel free to skip down to the section title "Successful Tracing with a simple ddtrace script" if you'd like to see the working solution right away, instead.*
 ---
 
 ## My (unsuccessful) attempt at Tracing with the Datadog-supplied App
@@ -726,7 +726,7 @@ if __name__ == '__main__':
 
 I moved my local ```my-flask-app.py``` onto my Ubuntu VM by placing it into the same directory as the VM's Vagrantfile (as per this [stackoverflow](https://stackoverflow.com/questions/16704059/easiest-way-to-copy-a-single-file-from-host-to-vagrant-guest)). This file is then automatically available at the path ```/vagrant``` in the Vagrant VM.
 
-##### Step 4: Attempting Tracing with ddtrace
+##### Step 4: Attempting Tracing
 
 In the VM, I changed the owner:group and provided privileges with:
 
@@ -739,110 +739,65 @@ I found consistent errors in the form of:
 
     2018-08-23 07:11:46,050 - ddtrace.writer - ERROR - cannot send services to localhost:8126: [Errno 111] Connection refused
 
-Exploring the documentation, I found a Datadog [article](https://docs.datadoghq.com/tracing/faq/why-am-i-getting-errno-111-connection-refused-errors-in-my-application-logs/) *explaining this was the result of the Trace Agent listening somewhere other than where the tracer libraries submit by default.* (??)
+This then became the first goal - obtaining a clean, error-free tracer script run. My troubleshooting process involved working through basic fix attempts to each one of several issues: run command syntax, port communication, and environment variable issues. I wasn't sure what was wrong as I began running the script, so I worked down what I thought were obvious failure modes first.
 
-I experimented with 
+I began by double-checking my config settings as a sanity check, and modified settings in ```/etc/datadog-agent/datadog.yaml``` to ensure that the following were uncommented:
 
-
-(
-
-Story needs to read:
-- what I tried to fix the ddtrace method
-- how attempting (briefly) the manual middleware insertion went (didnt)
-- what I did to port forward, see if it was Vagrant or Flask or my mac blocking Datadog from seeing trace data
-- more than that, were the traces even saved? That means it could have been connectivity in a few places OR a lack of data. 
-- After trying to explore that, getting stuck (because I'm not super familar with flask), I started simpler by building JUST something for DDTRACE (instead of troubleshooting 3 things at once - test cases rule!)
-- When I got THAT EXAMPLE listed to actually report something to Datadog, I expanded that little app to start a trace, wait some time, then report the span.
-- That worked: while it's dead simple, wrapping that in a ```while True``` loop continuously submitted data to data dog, and I moved to the last question.
+    apm_config:
+        enabled: true
+        env: 'pre-prod'
 
 
-)
+Then, looking for the error specifically, I explored the documentation. I found a Datadog [article](https://docs.datadoghq.com/tracing/faq/why-am-i-getting-errno-111-connection-refused-errors-in-my-application-logs/) explaining this was the result of the Trace Agent listening somewhere other than expected. That certainly sounded like a port access issue. 
 
+I experimented with ```tracer.configure()```, and changing the ```app.run(host='0.0.0.0',port='5050')``` run command line, trying different host and port combinations. I also explored Vagrant's port forwarding feature ([here)[https://www.vagrantup.com/docs/networking/basic_usage.html], thinking perhaps the tracer was working, but not reaching Datadog:
 
+    config.vm.network :forwarded_port, guest: 4999, host: 4998
 
+Those didn't seem to fix the issue. I experimented with manually-inserting the Middleware, by uncommenting the previously mentioned lines, then running with ```python my-flask-app.py```. I tried that in various combinations with the above fixes, but had less luck there, and eventually returned to trying ```ddtrace-run```.
 
-###### Step 5: Start monitoring your app's performance:
+##### Step 5: Questionable Tracer Results
 
-```python my-flask-app.py```    ```ddtrace-run python my-flask-app.py```.
-
-
-
-From there, I navigated in-browser Datadog > APM.
-
-
-new plan: app should be working, its vagrant.
-
-map ports so 4999 on the VM goes to 4999 out to datadog, ie at the vagrant level?
-
-flask dials out via 
-
-(could also go configure docker for this....better documentation...)
-Port mismatch?
-
-closest so far:
-FLASK_APP=my-flask-app.py DATADOG_ENV=flask_test ddtrace-run flask run --port=4999
+I found improved results by changing ```ddtrace-run``` by adding environment variable settings in-line with the run command, as per this [guide](https://www.datadoghq.com/blog/monitoring-flask-apps-with-datadog/):
 
 ```python
-from flask import Flask
-import blinker as _                                   # blinker import
-from ddtrace import tracer                            # tracer import                      
-#from ddtrace.contrib.flask import TraceMiddleware     # TraceMiddleWare import
-import logging
-import sys
-import random
-import time
-
-# Have flask use stdout as the logger
-main_logger = logging.getLogger()
-main_logger.setLevel(logging.DEBUG)
-c = logging.StreamHandler(sys.stdout)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-c.setFormatter(formatter)
-main_logger.addHandler(c)
-
-app = Flask(__name__)
-
-# Create TraceMiddleware object
-#traced_app = TraceMiddleware(app, tracer, service="my-flask-app", distributed_tracing=False)
-#traceNum = random.randint(1,3333)
-#time.sleep(2)
-
-@app.route('/')
-def api_entry():
-    return 'Entrypoint to the Application'
-
-@app.route('/api/apm')
-def apm_endpoint():
-    return 'Getting APM Started'
-
-@app.route('/api/trace')
-def trace_endpoint():
-    return 'Posting Traces'
-
-if __name__ == '__main__':
-#    app.run(host='127.0.0.1', port='8126')
-    app.run(host='0.0.0.0',port='5050')
-~                                                                                                    
-~                                                                                                    
-~                                                                                                    
-~                                                                     
+FLASK_APP=sample_app.py DATADOG_ENV=flask_test ddtrace-run flask run --port=4999
 ```
-Including using Vagrant port forwarding (```config.vm.network :forwarded_port, guest: 4999, host: 4998```)
 
-###### What didn't work:
-While I found several guides on running ```ddtrace-run python someapp.py```, and spent a fair amount of time with the supplied Python Flask app, I wasn't able to get tracer data properly working. ...
+These led me to a place where the trace ran, and provided output such as:
 
-Experimented with settings in ```/etc/datadog-agent/datadog.yaml```, changed permissions/ownership, eventually found that this worked. 
+![Questionable Tracing](images/QuestionableTrace.png)
 
-I thought perhaps the tracer wasn't taking in data, but ruled tthat out with
+This looked promising. However, the APM section of Datadog's web browser UI didn't report any trace from a service. 
 
-I wasn't sure if the issue was Vagrant's connectivity back to Datadog, but after Port Fowarding didn't fix the issue, and knowing that the other metric's graphed thus far worked told me the issue was in Flask. I don't know Flask that well, and after a fair time investment, started looking to build something simple from a base example instead.
+##### Step 6: Taking stock of the problem so far
 
-###### What worked:
+At this point, I wasn't sure if the issue was Vagrant's connectivity back to Datadog. However, after Port Fowarding didn't fix the issue, and knowing that other metrics were reaching Datadog (from previous sections of the Challenge), I suspected the issue most likely had to do with Flask. However, that still left the possibility that traces weren't being properly recorded, on top of connectivity issues, which could even be between Flask/Vagrant VM/my Macbook's port handling.
 
-The only thing I could be sure of was that the example code in the Datadog Doc on [Python Tracing](https://docs.datadoghq.com/tracing/setup/python/) *did* work for me. I started there, and looked to see what I could add.
+I had already explored Flask's documentation throughout this process, and decided that I was troubleshooting several things at once, potentially. The best course of action, I felt, was to build something simple from a base example instead. Building a test case that isolates a single issue is a techique I like, when possible.
 
-From the ddtrace API [guide](http://pypi.datadoghq.com/trace/docs/#module-ddtrace.contrib.flask), I wrote my own *simple* "app."" I realized as I was building a test to understand the API that a sleep() command run with a random integer could work as a straightforward metric to trace. The ```ddtrace.tracer``` class method trace() is called to begin measuring execution time before the random-input sleep command runs, then finish() reports that span back to the Datadog APM. The script was run via ```ddtrace-run python my_fake_server.py``` to collect trace information:
+## Successful Tracing with a simple ddtrace script
+###### Step 1: First successful data reported back to Datadog
+
+
+Many of the guides mentioned here had "My First Tracer" examples - I went back to an example code in the Datadog Doc on [Python Tracing](https://docs.datadoghq.com/tracing/setup/python/):
+
+```python
+from ddtrace import tracer
+
+with tracer.trace("web.request", service="my_service") as span:
+  span.set_tag("my_tag", "my_value")
+```
+
+and found that it actually *did* report data back to Datadog in the Datadog UI > APM. I with this code, and looked to see what I could add.
+
+###### Step 2: Pivot to the ddtrace API
+
+To build out this example codeblock into something that might report trace data, I used the ddtrace API [guide](http://pypi.datadoghq.com/trace/docs/#module-ddtrace.contrib.flask). I realized that a sleep() command run with a random integer input could work as a varying but straightforward metric to trace. Wrapping that in a ```while True:``` loop, I had a process that would run continuously, and report a trace at random intervals.
+
+##### Step 3: Fully-Instrumented "App"
+
+The ```ddtrace.tracer``` class method trace() is called to begin measuring execution time before the random-input sleep command runs, then finish() reports that span back to the Datadog APM. The script was run via ```ddtrace-run python my_fake_server.py``` to collect trace information. The Python script is provided here, and in the github repo [here](pythonScripts/my_fake_server.py)
 
 ```python
 from ddtrace import tracer
@@ -858,3 +813,7 @@ while True:
 That information is reported as a Timeboard ([link](https://app.datadoghq.com/dash/897139/fakeserver-real-host-timeboard?live=true&page=0&is_auto=false&from_ts=1535098716060&to_ts=1535102316060&tile_size=m&fullscreen=false), as:
 
 ![Timeboard: APM and Infrastruture Metrics](images/5_5_Timeboard.png)
+
+
+
+###### Step 2: Start monitoring your app's performance: 
