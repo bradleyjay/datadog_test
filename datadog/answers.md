@@ -584,6 +584,13 @@ These produced the emails:
 # Section 4: Collecting APM Data
 
 *Given the following Flask app (or any Python/Ruby/Go app of your choice) instrument this using Datadog’s APM solution:*
+- *Note: Using both ddtrace-run and manually inserting the Middleware has been known to cause issues. Please only use one or the other.*
+---
+
+## Instrument an Flask/Python/Ruby/Go app using Datadog APM
+##### Step 1: Examine the supplied Flask app
+
+The Datadog supplied Flask app:
 
 ```python
 from flask import Flask
@@ -616,19 +623,18 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port='5050')
 ```
 
----
+##### Step 2a: Set up the Trace Agent
+Applying Application Performance Monitoring (APM) requires using the Trace agent. In Linux, it comes packaged with the Datadog agent ([source](https://docs.datadoghq.com/tracing/setup/)),
 
-Applying Application Performance Monitoring (APM) requires using the Trace agent (which comes packaged with the Datadog agent in Linux). From the APM Agent [guide](https://docs.datadoghq.com/tracing/setup/),
-
-###### Step 1: Install the Datadog Agent
+##### Step 2b: Install the Datadog Agent
 
 *(Done previously)*
 
-###### Step 2: Install the Trace Agent
+##### Step 3: Configure the Trace Agent
 
-On Linux the APM Agent is enabled by default, and "no extra configuration is needed." According to the github [repo](https://github.com/DataDog/datadog-trace-agent/#run-on-linux), simply running the Datadog Agent is enough. Configuration settings are found under apm_config in the ```/etc/datadog-agent/datadog.yaml```. 
+On Linux the APM Agent is enabled by default, and "no extra configuration is needed." According to the github [repo](https://github.com/DataDog/datadog-trace-agent/#run-on-linux), simply running the Datadog Agent is enough. Configuration settings are found under the ```apm_config``` line in the ```/etc/datadog-agent/datadog.yaml```. 
 
-###### Step 3: Configure Your Environment
+##### Step 3: Configure the Environment
 
 Specifying a custom enviornment will allow all traces run through the APM to be grouped via an environment tag. To do that, I'll override the default env tag used by the trace Agent in the Agent config file. In the ```datadog.yaml```, I've uncommented then specified the environment as "pre-prod" with:
 
@@ -637,7 +643,7 @@ Specifying a custom enviornment will allow all traces run through the APM to be 
 
 To apply these changes, I restarted the Agent via ```sudo service datadog-agent restart```.
 
-###### Step 4: Instrument your Application
+##### Step 4: Dependencies in Vagrant VM's Ubuntu
 
 Using the Tracing Python Applications [guide](https://docs.datadoghq.com/tracing/setup/python/),
 I first installed the Datadog Tracing library and Flask itself via: 
@@ -645,9 +651,38 @@ I first installed the Datadog Tracing library and Flask itself via:
     pip install ddtrace
     pip install flask
 
-To include the middleware for Flask (recommended [here](http://pypi.datadoghq.com/trace/docs/#flask)), I've added import statements for ```tracer``` and ```TraceMiddleware```, while creating a Tracemiddleware object (all per the guide). 
+Additionally, I've installed the ```Blinker```library via ```pip install blinker```(required by Flask's middleware for signaling). 
 
-Additionally, I've installed the ```Blinker```library via ```pip install blinker```(required by Flask's middleware for signaling). Together, this yields the fully instrumented my-flask-app.py app (linked on github [here](????) as well):
+
+---
+> *I attempted to use the supplied Flask app at this stage - I ended up getting stuck actually sending the Flask function Trace sent to Datadog. I'll discuss why. In the end, I wrote my own script using the ddtrace API to create my own fake "server" app to trace.*
+>
+> *I'll first describe what I tried with the Datadog-supplied App, then the app I succeeded with.*
+---
+
+## My (unsuccessful) attempt at Tracing with the Datadog-supplied App
+##### Step 1: Prepping the Python Script for Tracing
+
+I wanted to start by setting up the Middleware for Flask, to give myself the choice to use it or not. That way, I could use ```ddtrace``` or manually-included Middleware, depending on what worked. I suspected this part might be difficult.
+
+To enable manual inclusion of the Middleware for Flask (recommended [here](http://pypi.datadoghq.com/trace/docs/#flask)), I added import statements for ```tracer``` and ```TraceMiddleware```, and a line to create a Tracemiddleware object.
+
+##### Step 2: Setting up the Python Script for running with ddtrace
+
+Since the Coding Challenge recommended using only ```ddtrace``` *or* manually-included Middleware, this requires commenting out the Middleware import statment,
+
+```python
+    #from ddtrace.contrib.flask import TraceMiddleware     # TraceMiddleWare import
+```
+
+ and Middleware creation lines,
+
+```python
+    # Create TraceMiddleware object
+    #traced_app = TraceMiddleware(app, tracer, service="my-flask-app", distributed_tracing=False)
+```
+
+ Then, the instrumented my-flask-app.py app looks like:
 
 ```python
 from flask import Flask
@@ -686,20 +721,14 @@ def trace_endpoint():
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='5050')
 ```
-*Aside*: You'll note these lines commented:
 
-    #from ddtrace.contrib.flask import TraceMiddleware     # TraceMiddleWare import
+##### Step 3: Moving the Python Script onto Vagrant VM
 
-    # Create TraceMiddleware object
-    #traced_app = TraceMiddleware(app, tracer, service="my-flask-app", distributed_tracing=False)
+I moved my local ```my-flask-app.py``` onto my Ubuntu VM by placing it into the same directory as the VM's Vagrantfile (as per this [stackoverflow](https://stackoverflow.com/questions/16704059/easiest-way-to-copy-a-single-file-from-host-to-vagrant-guest)). This file is then automatically available at the path ```/vagrant``` in the Vagrant VM.
 
-Running with just a manual ```python my-flask-app.py``` didn't work those commands, but *did* work with ```ddtrace-run python my-flask-app.py```.
+##### Step 4: Attempting Tracing with ddtrace
 
-###### Step 5: Start monitoring your app's performance:
-
-First, I moved my local ```my-flask-app.py``` onto my Ubuntu VM by placing it into the same directory as the VM's Vagrantfile (as per this [stackoverflow](https://stackoverflow.com/questions/16704059/easiest-way-to-copy-a-single-file-from-host-to-vagrant-guest)). Then, the file is automatically available at the path ```/vagrant``` in the Vagrant VM.
-
-In the VM, as before, I changed the owner:group and provided priviledges with:
+In the VM, I changed the owner:group and provided privileges with:
 
     sudo chown dd-agent:dd-agent my-flask-app.py
     sudo chmod 755 my-flask-app.py
@@ -710,7 +739,33 @@ I found consistent errors in the form of:
 
     2018-08-23 07:11:46,050 - ddtrace.writer - ERROR - cannot send services to localhost:8126: [Errno 111] Connection refused
 
-Which a Datadog [article](https://docs.datadoghq.com/tracing/faq/why-am-i-getting-errno-111-connection-refused-errors-in-my-application-logs/) explained was the result of the Trace Agent listening somewhere other than where the tracer libraries submit by default. There are explicit directions for Docker, involving finding out where Docker was 
+Exploring the documentation, I found a Datadog [article](https://docs.datadoghq.com/tracing/faq/why-am-i-getting-errno-111-connection-refused-errors-in-my-application-logs/) *explaining this was the result of the Trace Agent listening somewhere other than where the tracer libraries submit by default.* (??)
+
+I experimented with 
+
+
+(
+
+Story needs to read:
+- what I tried to fix the ddtrace method
+- how attempting (briefly) the manual middleware insertion went (didnt)
+- what I did to port forward, see if it was Vagrant or Flask or my mac blocking Datadog from seeing trace data
+- more than that, were the traces even saved? That means it could have been connectivity in a few places OR a lack of data. 
+- After trying to explore that, getting stuck (because I'm not super familar with flask), I started simpler by building JUST something for DDTRACE (instead of troubleshooting 3 things at once - test cases rule!)
+- When I got THAT EXAMPLE listed to actually report something to Datadog, I expanded that little app to start a trace, wait some time, then report the span.
+- That worked: while it's dead simple, wrapping that in a ```while True``` loop continuously submitted data to data dog, and I moved to the last question.
+
+
+)
+
+
+
+
+###### Step 5: Start monitoring your app's performance:
+
+```python my-flask-app.py```    ```ddtrace-run python my-flask-app.py```.
+
+
 
 From there, I navigated in-browser Datadog > APM.
 
