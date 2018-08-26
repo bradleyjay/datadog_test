@@ -777,8 +777,7 @@ At this point, I wasn't sure if the issue was Vagrant's connectivity back to Dat
 I had already explored Flask's documentation throughout this process, and decided that I was troubleshooting several things at once, potentially. The best course of action, I felt, was to build something simple from a base example instead. Building a test case that isolates a single issue is a techique I like, when possible.
 
 ## Successful Tracing with a simple ddtrace script
-###### Step 1: First successful data reported back to Datadog
-
+##### Step 1: First successful data reported back to Datadog
 
 Many of the guides mentioned here had "My First Tracer" examples - I went back to an example code in the Datadog Doc on [Python Tracing](https://docs.datadoghq.com/tracing/setup/python/):
 
@@ -791,11 +790,18 @@ with tracer.trace("web.request", service="my_service") as span:
 
 and found that it actually *did* report data back to Datadog in the Datadog UI > APM. I with this code, and looked to see what I could add.
 
-###### Step 2: Pivot to the ddtrace API
+##### Step 2: Using the ddtrace API
 
 To build out this example codeblock into something that might report trace data, I used the ddtrace API [guide](http://pypi.datadoghq.com/trace/docs/#module-ddtrace.contrib.flask). I realized that a sleep() command run with a random integer input could work as a varying but straightforward metric to trace. Wrapping that in a ```while True:``` loop, I had a process that would run continuously, and report a trace at random intervals.
 
-##### Step 3: Fully-Instrumented "App"
+---
+> Note: These are answered a little out of order, to make my thought process easier to read through. First, I show the Python "app" I use, then the Dashboard with APM and Infrastructure Metrics, then the Bonus Question answer.
+
+*Please include your fully instrumented app in your submission, as well.*
+
+---
+
+## My Answer, Part 1: Fully-Instrumented "App"
 
 The ```ddtrace.tracer``` class method trace() is called to begin measuring execution time before the random-input sleep command runs, then finish() reports that span back to the Datadog APM. The script was run via ```ddtrace-run python my_fake_server.py``` to collect trace information. The Python script is provided here, and in the github repo [here](pythonScripts/my_fake_server.py)
 
@@ -810,10 +816,52 @@ while True:
     span.finish()
 ```
 
-That information is reported as a Timeboard ([link](https://app.datadoghq.com/dash/897139/fakeserver-real-host-timeboard?live=true&page=0&is_auto=false&from_ts=1535098716060&to_ts=1535102316060&tile_size=m&fullscreen=false), as:
+---
+*Provide a link and a screenshot of a Dashboard with both APM and Infrastructure Metrics.*
 
-![Timeboard: APM and Infrastruture Metrics](images/5_5_Timeboard.png)
+---
+
+## My Answer, Part 2: Link and Screenshot of Dashboard with APM, Infrastructure Metrics
+
+For my APM Metric, I've included the span reported by my ```fake_server``` on the host ```ubuntu-xenial``` in the environment pre-prod:
+
+     trace.My_Interval.duration
+
+For Infrastructure Metrics, I've included System Bytes Sent vs. Received, and a measure of System IO utilization averaged over all hosts (i.e. the system, which here is again just ```ubuntu-xenial``` ):
+    
+    avg:system.io.util{*}
 
 
+The Timeboard presenting these is linked([here](https://app.datadoghq.com/dash/897139/fakeserver-real-host-timeboard?live=true&page=0&is_auto=false&from_ts=1535098716060&to_ts=1535102316060&tile_size=m&fullscreen=false) and presented below:
 
-###### Step 2: Start monitoring your app's performance: 
+![Timeboard: APM and Infrastruture Metrics](images/4_5_Timeboard.png)
+
+---
+> ***Bonus Question:*** *What is the difference between a Service and a Resource?*
+---
+
+## My Answer, Part 3: Service vs. Resources
+
+From a Datadog help [article](https://help.datadoghq.com/hc/en-us/articles/115000702546-What-is-the-Difference-Between-Type-Service-Resource-and-Name-), a **service** is a "set of processes that work together to provide a feature set." I.e., for a web app, one service might be a database, while another handles admin functions, while still another handles the web front end.
+
+A **resource** is a "particular query to a service." This could include the literal SQL query for a database, or a route or canonical URL.
+
+# Final Question
+
+
+*Datadog has been used in a lot of creative ways in the past. We’ve written some blog posts about using Datadog to monitor the NYC Subway System, Pokemon Go, and even office restroom availability!*
+
+*Is there anything creative you would use Datadog for?*
+
+---
+
+## Creative Datadog Use
+##### Advanced Cluster Management for Cloud-Computing 
+
+Most production scale Computational Fluid Dynamics (CFD) simulations require vast amounts of computational resources, either via a physical compute cluster or a cloud-based high performance computing platform like Rescale (which uses Amazon AWS, a service Datadog plays nicely with). Datadog could provide real insight into the health and status of a running job - runs like those are not cheap.
+
+For a large job, Email Alerts would mean not losing a full weekend of computational time on 20-150 nodes, a *huge* amount of wasted resources. Where jobs are generally under a deadline, that timesavings could be critical - contracts/bids get missed when jobs like those fail.
+
+We've seen large jobs receive resources from a cluster management system, then simply sit, using up those resources but not solving the intended job. Other times, when a job has ended, a computational node resource may not release properly, creating an unusable zombie node. On our physical cluster, our cluster administrator fixes those *manually* today by forcing a node restart, despite the size and importance of our cluster's health and efficiency. I'm not sure that's uncommon, unfortunately.
+
+Datadog could be a great way to report when a node has locked up or become unresponsive. While we have excellent cluster management software, it doesn't provide the kind of historical, behavior-based comparison Datadog uses to automatically report events.
