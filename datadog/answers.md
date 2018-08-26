@@ -373,7 +373,7 @@ Aggregate and rollup are covered in this [guide](https://docs.datadoghq.com/grap
 
 **Correct way**: That's not quite right - the graph output looked far too low. The '80' value is *not* point count, it's time in seconds. As per the [documentation](https://docs.datadoghq.com/graphing/miscellaneous/functions/) on .rollup,
 
->The function takes two parameters, method and time: .rollup(method,time). The method can be sum/min/max/count/avg and time is in seconds. You can use either one individually, or both together like .rollup(sum,120).
+>The function takes two parameters: method and time: .rollup(method,time). The method can be sum/min/max/count/avg and time is in seconds. You can use either one individually, or both together like .rollup(sum,120).
 
 So instead, I've implimented a graph to plot the query ```"q": "my_metric{host:ubuntu-xenial}.rollup(sum,3600)"``` as an aggregate sum of the last 3600 seconds (one hour) of my_metric values:
 
