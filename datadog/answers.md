@@ -577,7 +577,7 @@ For the weekend, Saturday morning will already be muted through 9:00 AM EST due 
 > - *Make sure that your email is notified when you schedule the downtime and take a screenshot of that notification.*
 ---
 ## Send an email when the downtime is scheduled and provide a screenshot
-These produced the following emails:
+These produced the emails:
 
 ![Alert Mute Email: Weekday](images/3_3_WeekdayEmail.png)
 ![Alert Mute Email: Weekend](images/3_3_WeekendEmail.png)
