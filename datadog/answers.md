@@ -468,6 +468,7 @@ api.Timeboard.create(title=title,
  
 ## Modify the timeboard: Set the timeframe to the past 5 minutes
 By selecting the last sliver of time on any graph using the mouse, the last five minutes are selected (as far as I can tell, that's the minimum displayable window): 
+
 ![UI Selection of last 5 minutes in timeBoard](images/2_4_Last5Min_InUI.png)
 
 ---
@@ -567,6 +568,7 @@ And corresponding alert message:
 ## Schedule Alert downtime: Saturdays and Sundays
 
 For the weekend, Saturday morning will already be muted through 9:00 AM EST due to the weekday rule. Muting Saturday and Sunday only would overlap (probably not a problem) and leave Monday morning until 9:00 AM EST un-muted (actually a problem). As such, the weekend mute begins at 9:00 AM, and runs 24 hours, both Saturday and Sunday:
+
 ![Weekend Alert 1](images/3_3_Silence_Weekend1.png)
 ![Weekend Alert 2](images/3_3_Silence_Weekend2.png)
 
@@ -575,7 +577,8 @@ For the weekend, Saturday morning will already be muted through 9:00 AM EST due 
 > - *Make sure that your email is notified when you schedule the downtime and take a screenshot of that notification.*
 ---
 ## Send an email when the downtime is scheduled and provide a screenshot
-These produced the emails:
+These produced the following emails:
+
 ![Alert Mute Email: Weekday](images/3_3_WeekdayEmail.png)
 ![Alert Mute Email: Weekend](images/3_3_WeekendEmail.png)
 
