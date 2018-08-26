@@ -1,8 +1,8 @@
 ## Datadog Coding Challenge - Bradley Shields
 
-Hello Datadog, here is my livedoc I created while completing the Datadog Coding Challenge. It was suggested that I document my thought process, steps that worked, those that didn't, and so on. I've positioned the detail level of my answers to be somewhere around that of a workflow you might send a client who is familiar, but maybe needs guidance -  enough detail to reproduce results, even through sub-steps like installing other packages, and so on. 
+Hello Datadog, here is the livedoc I created while completing the Datadog Coding Challenge. It was suggested that I document my thought process, steps that worked, those that didn't, and so on. I've positioned the detail level of my answers to be somewhere between a process explanation to a colleague and that of a workflow you might send a client who is familiar, but maybe needs guidance -  enough detail to reproduce results, even through sub-steps like installing other packages, and so on. 
 
-I know that you all are extremely familiar, but I thought a detailed account would make a useful reference and show my thought process well. I've enjoyed this challenge and learned a few things from it; thank you for the opportunity.
+I know that you all are extremely familiar, but I thought a detailed account would make a useful reference later and show my thought process as well. I've enjoyed this challenge and learned a few things from it; thank you for the opportunity.
 
 With that, let's begin.
   
