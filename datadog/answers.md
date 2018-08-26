@@ -570,7 +570,7 @@ And corresponding alert message:
 For the weekend, Saturday morning will already be muted through 9:00 AM EST due to the weekday rule. Muting Saturday and Sunday only would overlap (probably not a problem) and leave Monday morning until 9:00 AM EST un-muted (actually a problem). As such, the weekend mute begins at 9:00 AM, and runs 24 hours, both Saturday and Sunday:
 
 ![Weekend Alert 1](images/3_3_Silence_Weekend1.png)
-![Weekend Alert 2](images/3_3_Silence_Weekend2.png)
+
 
 ---
 > *(Set up scheduled downtimes for this monitor:)*
