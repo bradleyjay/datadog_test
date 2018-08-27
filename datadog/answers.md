@@ -255,7 +255,7 @@ Next, close-ups of static values being reported, 1 and 4 respectively:
 ![Metric Check 1](images/1_3_metricVal1.png)
 ![Metric Check 4](images/1_3_metricVal4.png)
 
-And finally, the metric reported from the random.randint() line uncommented in my_metric.py:
+And finally, the varying metric value reported with random.randint(), after uncommenting the line:
 
 ![Metric Check Rand](images/1_3_metricValRand.png)
 
@@ -282,7 +282,7 @@ Modifying the ```.yaml``` file for a given check (located at ```/etc/datadog-age
 Otherwise, there are several options in the Agent config file, ```/etc/datadog-agent/datadog.yaml```. There are options for process-config and so on (Line 503), among others, but that's more specific than I think the question was intended to be.
 
 ###### Incorrect Answer (for context): The Python Script way
-The wrong way to do this, to justify my above answer, is as follows. The flush() method in the Gauge class does take *interval* as an argument. This is located in [aggregator.py](https://github.com/DataDog/dd-agent/blob/master/aggregator.py), in the dd-agent source code. In your Python script, you could directly set how often a given metric was flushed to Datadog:
+The wrong way to do this, to justify my above answer, is as follows. The flush() method in the Gauge class does take *interval* as an argument. This is located in [aggregator.py](https://github.com/DataDog/dd-agent/blob/master/aggregator.py), in the ```dd-agent``` source code. In Python, you would be able to directly set how often a given metric was flushed to Datadog:
 
 ![Gauge](images/1_5_Gauge.png)
 
