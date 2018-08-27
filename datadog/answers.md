@@ -557,7 +557,7 @@ The [guide](https://docs.datadoghq.com/monitors/downtimes/) for Scheduling monit
 Scheduled downtime for weekday evenings and mornings begins at 7:00 PM EST each night, and goes until 9:00 AM the following day:
 ![Weekday Alert 1](images/3_3_Silence_Weekday1.png)
 
-And corresponding alert message:
+And the corresponding alert message:
 
 ![Weekday Alert 2](images/3_3_Silence_Weekday2.png)
 
@@ -567,7 +567,7 @@ And corresponding alert message:
 ---
 ## Schedule Alert downtime: Saturdays and Sundays
 
-For the weekend, Saturday morning will already be muted through 9:00 AM EST due to the weekday rule. Muting Saturday and Sunday only would overlap (probably not a problem) and leave Monday morning until 9:00 AM EST un-muted (actually a problem). As such, the weekend mute begins at 9:00 AM, and runs 24 hours, both Saturday and Sunday:
+For the weekend, Saturday morning will already be muted through 9:00 AM EST due to the weekday rule. Muting Saturday and Sunday only would overlap (probably not a problem) and leave Monday morning until 9:00 AM EST un-muted (actually a problem). As such, the weekend mute begins at 9:00 AM, and runs 24 hours, both on Saturday and again on Sunday:
 
 ![Weekend Alert 1](images/3_3_Silence_Weekend1.png)
 ![Weekend Alert 2](images/3_3_Silence_Weekend2.png)
@@ -586,14 +586,14 @@ These produced the emails:
 
 # Section 4: Collecting APM Data
 
-*Given the following Flask app (or any Python/Ruby/Go app of your choice) instrument this using Datadog’s APM solution:*
+*Given the (supplied) Flask app (or any Python/Ruby/Go app of your choice) instrument this using Datadog’s APM solution:*
 - *Note: Using both ddtrace-run and manually inserting the Middleware has been known to cause issues. Please only use one or the other.*
 ---
 
 ## Instrument an Flask/Python/Ruby/Go app using Datadog APM
 ##### Step 1: Examine the supplied Flask app
 
-The Datadog supplied Flask app:
+The Datadog-supplied Flask app:
 
 ```python
 from flask import Flask
@@ -639,7 +639,7 @@ On Linux the APM Agent is enabled by default, and "no extra configuration is nee
 
 ##### Step 3: Configure the Environment
 
-Specifying a custom environment will allow all traces run through the APM to be grouped via an environment tag. To do that, I'll override the default env tag used by the trace Agent in the Agent config file. In the ```datadog.yaml```, I've uncommented then specified the environment as "pre-prod" with:
+Specifying a custom environment will allow all traces run through the APM to be grouped via an environment tag. To do that, I overrode the default env tag used by the trace Agent in the Agent config file. In ```datadog.yaml```, I've uncommented then specified the environment as "pre-prod" with:
 
     apm_config:
       env: pre-prod
@@ -659,9 +659,9 @@ Additionally, I've installed the ```Blinker```library via ```pip install blinker
 
 ---
 
-I attempted to use the supplied Flask app at this stage - I ended up getting stuck actually sending trace data from the Flask app's functions to Datadog. I'll discuss why. In the end, I wrote my own script using the ddtrace API to create my own fake "server" app to trace.
+**I attempted to use the supplied Flask app at this stage - I ended up getting stuck actually sending trace data from the Flask app's functions to Datadog. I'll discuss why. In the end, I wrote my own script using the ddtrace API to create my own fake "server" app to trace.**
 
-I'll first describe what I tried with the Datadog-supplied App, then the app I succeeded with. Please feel free to skip down to the section title "Successful Tracing with a simple ddtrace script" if you'd like to see the working solution right away, instead.
+**I'll first describe what I tried with the Datadog-supplied App, then the app I succeeded with. Please feel free to skip down to the section title "Successful Tracing with a simple ddtrace script" if you'd like to see the working solution right away, instead.**
 
 ---
 
