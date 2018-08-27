@@ -33,13 +33,13 @@ In this case, a relative path worked better for me because it allowed me to orga
 
 ![A Data Dog](images/ADataDog.jpg)
 
-As you can clearly see, here we have a prime example of Datadog. I can't wait to work with your product more. With image embedding out of the way, I'll set up the enviornment for the **Coding Challenge.**
+As you can clearly see, here we have a prime example of Datadog. I can't wait to work with your product more. With image embedding out of the way, I'll set up the environment for the **Coding Challenge.**
 
 
 # Prerequisites - Setup the Environment
 
 *You can utilize any OS/host that you would like to complete this exercise. However, we recommend one of the following approaches:*
-  - *You can spin up a fresh linux VM via Vagrant or other tools so that you don’t run into any OS or dependency issues. Here are instructions for setting up a Vagrant Ubuntu VM. We strongly recommend using minimum v. 16.04 to avoid dependency issues.*
+  - *You can spin up a fresh Linux VM via Vagrant or other tools so that you don’t run into any OS or dependency issues. Here are instructions for setting up a Vagrant Ubuntu VM. We strongly recommend using minimum v. 16.04 to avoid dependency issues.*
   - *You can utilize a Containerized approach with Docker for Linux and our dockerized Datadog Agent image.*
 ---
   
@@ -156,7 +156,7 @@ Then, ```mysqladmin -u vagrant version``` correctly outputs the version, indicat
 
 ##### Step 2a: Install the Corresponding Integration for that Database (MySQL) - Preparing MySQL
 
-From the [MySQL Integration Documentation](https://docs.datadoghq.com/integrations/mysql/), MySQL integration comes with the Datadog Agent installation. For configuration, ```conf.d/mysql.d/conf.yaml``` must be editted in the Agent's [configuration directory](https://docs.datadoghq.com/agent/faq/agent-configuration-files/#agent-configuration-directory), which for Linux is ```/etc/datadog-agent/conf.d/```.
+From the [MySQL Integration Documentation](https://docs.datadoghq.com/integrations/mysql/), MySQL integration comes with the Datadog Agent installation. For configuration, ```conf.d/mysql.d/conf.yaml``` must be edited in the Agent's [configuration directory](https://docs.datadoghq.com/agent/faq/agent-configuration-files/#agent-configuration-directory), which for Linux is ```/etc/datadog-agent/conf.d/```.
 
 Before doing that, the SQL must be prepared by creating a user for Datadog (in actual documentation, I would of course **never** list the password, as I've done here). These commands use @'localhost', which will work for our single host proof of concept:
 
@@ -214,7 +214,7 @@ Then, I set ownership and permissions for that file via:
     sudo chown dd-agent:dd-agent mysql.yaml 
     sudo chmod 755 ./mysql.yaml 
 
-Restarting the agent with ```sudo service datadog-agent restart```, I then ran the **info** command (```sudo datadog-agent status``` on Linux), confirming that the "Checks" section showed a sucessful MySQL Collector check:
+Restarting the agent with ```sudo service datadog-agent restart```, I then ran the **info** command (```sudo datadog-agent status``` on Linux), confirming that the "Checks" section showed a successful MySQL Collector check:
 
 ![MySQL Collector Check](images/1_2c_MySQLChecks.png)
 
@@ -292,8 +292,8 @@ The wrong way to do this, to justify my above answer, is as follows. The flush()
 
 ---
 
-## Create a timeboard
-##### Step 1: Setup Dogshell
+## Create a Timeboard
+##### Step 1: Setup dogshell
 I opted to use the command-line interface for the Datadog API, described in the Dogshell [guide](https://docs.datadoghq.com/developers/faq/dogshell-quickly-use-datadog-s-api-from-terminal-shell/). To install it, I followed the dedicated [instructions](https://github.com/DataDog/datadogpy#installation). First, I installed pip from my Ubuntu VM command line:
 
     sudo apt-get install python-pip
@@ -308,11 +308,11 @@ When asked for my API key, I checked under the Datadog web interface > Integrati
 
 ##### Step 2: Use Dogshell commands to create a Timeboard
 
-For the command to create my timeboard, I found the Datadog API [guide](https://docs.datadoghq.com/api/?lang=python#timeboards) section on Creating Timeboards. I created a Python script from the Example Request listed. I entered my API and APP keys (from the previous section), added a title, and named the file ```my_first_timeboard.py```:
+For the command to create my Timeboard, I found the Datadog API [guide](https://docs.datadoghq.com/api/?lang=python#timeboards) section on Creating Timeboards. I created a Python script from the Example Request listed. I entered my API and APP keys (from the previous section), added a title, and named the file ```my_first_timeboard.py```:
 
 ![Create Timeboard](images/2_0_CreateTimeboard.png)
 
-I placed this into a new folder in /etc/datadog-agent/ to keep things organized. I checked the timeboard man page via ```dog timeboard -h``` After playing around with possible ```dog timeboard post``` commands, I realized there wasn't a way to feed Dogshell a Python script - those API Python examples are (obviously, now) meant to be run directly in Python to run the ```api.Timeboard.create()``` method at the bottom of the file. I then my Python script via:
+I placed this into a new folder in /etc/datadog-agent/ to keep things organized. I checked the Timeboard man page via ```dog timeboard -h``` After playing around with possible ```dog timeboard post``` commands, I realized there wasn't a way to feed Dogshell a Python script - those API Python examples are (obviously, now) meant to be run directly in Python to run the ```api.Timeboard.create()``` method at the bottom of the file. I then my Python script via:
 
     python my_first_timeboard.py
 
@@ -329,9 +329,9 @@ and clicking on it, that it contains our example metric (Average Memory Free):
 > - *Your custom metric scoped over your host.*
 ---
 
-## Add your custom metric scoped over your host to the timeboard
+## Add your custom metric scoped over your host to the Timeboard
 
-From my example timeboard, I'll start building each feature that will get added to the timeboard by our ```api.Timeboard.create()``` call, as a graph. I did try implimenting this first as a call to send metrics directly via api.Metric.send() (detailed [here](https://docs.datadoghq.com/api/?lang=python#post-time-series-points)), but while that made the metric available on Datadog for my localhost, it didn't generate the graph as I intended. As I'm testing syntax, I'm deleting incorrect timeboards via the command
+From my example Timeboard, I'll start building each feature that will get added to the Timeboard by our ```api.Timeboard.create()``` call, as a graph. I did try implementing this first as a call to send metrics directly via api.Metric.send() (detailed [here](https://docs.datadoghq.com/api/?lang=python#post-time-series-points)), but while that made the metric available on Datadog for my localhost, it didn't generate the graph as I intended. As I'm testing syntax, I'm deleting incorrect Timeboards via the command
 
     dog timeboard show_all
     dog timeboard delete <timeboard id>
@@ -340,7 +340,7 @@ I was able to correctly graph my_metric: under the **arguments** listed for Crea
 
 ![Python with Metric added](images/2_1_MetricAdded.png)
 
-This yields the timeboard:
+This yields the Timeboard:
 
 ![Timeboard with Metric added](images/2_1_Timeboard.png)
 
@@ -355,7 +355,7 @@ With the JSON guide in hand, this part is much easier. The anomaly function is a
 
 ![Python with Metric2 added](images/2_2_MetricAdded.png)
 
-And the timeboard,
+And the Timeboard,
 
 ![Timeboard with Metric2 added](images/2_2_Timeboard.png)
 
@@ -375,12 +375,12 @@ Aggregate and rollup are covered in this [guide](https://docs.datadoghq.com/grap
 
 >The function takes two parameters: method and time: .rollup(method,time). The method can be sum/min/max/count/avg and time is in seconds. You can use either one individually, or both together like .rollup(sum,120).
 
-So instead, I've implimented a graph to plot the query ```"q": "my_metric{host:ubuntu-xenial}.rollup(sum,3600)"``` as an aggregate sum of the last 3600 seconds (one hour) of my_metric values:
+So instead, I've implemented a graph to plot the query ```"q": "my_metric{host:ubuntu-xenial}.rollup(sum,3600)"``` as an aggregate sum of the last 3600 seconds (one hour) of my_metric values:
 
 
 ![Python with Metric3 added](images/2_3_MetricAdded.png)
 
-And the timeboard, 
+And the Timeboard, 
 
 ![Timeboard with Metric3 added](images/2_3_Timeboard.png) 
 
@@ -397,7 +397,7 @@ To pull my Python script from the Vagrant VM, I first installed vagrant-scp (as 
 
 ##### Step 2: Include the Python script
 
-The Python script I used to create this timeboard is at the path ```etc/datadog-agent/dog/my_first_timeboard.py```, and embeded via link and codeblock, here:
+The Python script I used to create this Timeboard is at the path ```etc/datadog-agent/dog/my_first_timeboard.py```, and embedded via link and codeblock, here:
 
 [Python Script for Timeboard: Github Link](pythonScripts/my_first_timeboard.py)
 
@@ -466,7 +466,7 @@ api.Timeboard.create(title=title,
 > - *Set the Timeboard's timeframe to the past 5 minutes*
 ---
  
-## Modify the timeboard: Set the timeframe to the past 5 minutes
+## Modify the Timeboard: Set the timeframe to the past 5 minutes
 By selecting the last sliver of time on any graph using the mouse, the last five minutes are selected (as far as I can tell, that's the minimum displayable window): 
 
 ![UI Selection of last 5 minutes in timeBoard](images/2_4_Last5Min_InUI.png)
@@ -489,7 +489,7 @@ And there it is, in my gmail:
 ---
 
 ## What is the Anomaly graph displaying?
-Generally, an [anomaly](https://docs.datadoghq.com/monitors/monitor_types/anomaly/) uses algorithimic detection to compare a metric to it's past values, and can be configured to use historical data as well (time of day, day of the week patterns, and so on).
+Generally, an [anomaly](https://docs.datadoghq.com/monitors/monitor_types/anomaly/) uses algorithmic detection to compare a metric to it's past values, and can be configured to use historical data as well (time of day, day of the week patterns, and so on).
 
 The Anomaly graph here is displaying a region on either side of the current value of the reported metric. This represents the range of values within a set number (2, here) of standard deviations of the mean value, taken over some number of seconds set by a default rollup value, explained [here]([rollup](https://docs.datadoghq.com/monitors/monitor_types/anomaly/)), but I'm not sure what that default is. Because I've chosen the 'basic' algorithm, the anomaly is calculated with a "simple lagging quantile computation," i.e. no seasonal/longer term trend data.
 
@@ -542,7 +542,7 @@ Warning! No data has been reported by my_metric on Host IP {{host.ip}} in the la
 Notify: @bradleyjshields@gmail.com
 ```
 
-The email I recieved when the monitor threshold was reached was:
+The email I received when the monitor threshold was reached was:
 
 ![Alert Monitor Creation](images/3_2_EmailWarning.png)
 
@@ -639,7 +639,7 @@ On Linux the APM Agent is enabled by default, and "no extra configuration is nee
 
 ##### Step 3: Configure the Environment
 
-Specifying a custom enviornment will allow all traces run through the APM to be grouped via an environment tag. To do that, I'll override the default env tag used by the trace Agent in the Agent config file. In the ```datadog.yaml```, I've uncommented then specified the environment as "pre-prod" with:
+Specifying a custom environment will allow all traces run through the APM to be grouped via an environment tag. To do that, I'll override the default env tag used by the trace Agent in the Agent config file. In the ```datadog.yaml```, I've uncommented then specified the environment as "pre-prod" with:
 
     apm_config:
       env: pre-prod
@@ -654,7 +654,7 @@ I first installed the Datadog Tracing library and Flask itself via:
     pip install ddtrace
     pip install flask
 
-Additionally, I've installed the ```Blinker```library via ```pip install blinker```(required by Flask's middleware for signaling). 
+Additionally, I've installed the ```Blinker```library via ```pip install blinker```(required by Flask's Middleware for signaling). 
 
 
 ---
@@ -670,11 +670,11 @@ I'll first describe what I tried with the Datadog-supplied App, then the app I s
 
 I wanted to start by setting up the Middleware for Flask, to give myself the choice to use it or not. That way, I could use ```ddtrace``` or manually-included Middleware, depending on what worked. I suspected this part might be difficult.
 
-To enable manual inclusion of the Middleware for Flask (recommended [here](http://pypi.datadoghq.com/trace/docs/#flask)), I added import statements for ```tracer``` and ```TraceMiddleware```, and a line to create a Tracemiddleware object.
+To enable manual inclusion of the Middleware for Flask (recommended [here](http://pypi.datadoghq.com/trace/docs/#flask)), I added import statements for ```tracer``` and ```TraceMiddleware```, and a line to create a TraceMiddleware object.
 
 ##### Step 2: Setting up the Python Script for running with ddtrace
 
-Since the Coding Challenge recommended using only ```ddtrace``` *or* manually-included Middleware, this requires commenting out the Middleware import statment,
+Since the Coding Challenge recommended using only ```ddtrace``` *or* manually-included Middleware, this requires commenting out the Middleware import statement,
 
 ```python
     #from ddtrace.contrib.flask import TraceMiddleware     # TraceMiddleWare import
@@ -777,9 +777,9 @@ This looked promising. However, the APM section of Datadog's web browser UI didn
 
 ##### Step 6: Taking stock of the problem so far
 
-At this point, I wasn't sure if the issue was Vagrant's connectivity back to Datadog. However, after Port Fowarding didn't fix the issue, and knowing that other metrics were reaching Datadog (from previous sections of the Challenge), I suspected the issue most likely had to do with Flask. However, that still left the possibility that traces weren't being properly recorded, on top of connectivity issues, which could even be between Flask/Vagrant VM/my Macbook's port handling.
+At this point, I wasn't sure if the issue was Vagrant's connectivity back to Datadog. However, after Port Forwarding didn't fix the issue, and knowing that other metrics were reaching Datadog (from previous sections of the Challenge), I suspected the issue most likely had to do with Flask. However, that still left the possibility that traces weren't being properly recorded, on top of connectivity issues, which could even be between Flask/Vagrant VM/my Macbook's port handling.
 
-I had already explored Flask's documentation throughout this process, and decided that I was troubleshooting several things at once, potentially. The best course of action, I felt, was to build something simple from a base example instead. Building a test case that isolates a single issue is a techique I like, when possible.
+I had already explored Flask's documentation throughout this process, and decided that I was troubleshooting several things at once, potentially. The best course of action, I felt, was to build something simple from a base example instead. Building a test case that isolates a single issue is a technique I like, when possible.
 
 ## Successful Tracing with a simple ddtrace script
 ##### Step 1: First successful data reported back to Datadog
@@ -839,7 +839,7 @@ For Infrastructure Metrics, I've included System Bytes Sent vs. Received, and a 
 
 The Timeboard presenting these is linked ([here](https://app.datadoghq.com/dash/897139/fakeserver-real-host-timeboard?live=true&page=0&is_auto=false&from_ts=1535098716060&to_ts=1535102316060&tile_size=m&fullscreen=false) and presented below:
 
-![Timeboard: APM and Infrastruture Metrics](images/4_5_Timeboard.png)
+![Timeboard: APM and Infrastructure Metrics](images/4_5_Timeboard.png)
 
 ---
 > ***Bonus Question:*** *What is the difference between a Service and a Resource?*
@@ -867,5 +867,5 @@ Most production-scale Computational Fluid Dynamics (CFD) simulations require vas
 
 We've seen large jobs receive resources from a cluster management system, then simply sit, using up those resources but not solving the intended job. Other times, when a job has ended, a computational node resource may not release properly, creating an unusable zombie node. On our physical cluster, our cluster administrator fixes those *manually* today by forcing a node restart, despite the size and importance of our cluster's health and efficiency. 
 
-I'm not sure that's uncommon, unfortunately. Datadog could be a great way to report when a node has locked up or become unresponsive. While we have excellent cluster management software, it doesn't provide the kind of historical, behavior-based comparison Datadog uses to automatically report events. For a large job, Email Alerts would mean *not* losing a full weekend of computational time over a hung process; on a typical 20-150 nodes, 72 hours is an enormous amount of wasted resources. Where jobs are generally under a deadline, that timesavings could be critical - contracts/bids get missed when jobs like those fail.
+I'm not sure that's uncommon, unfortunately. Datadog could be a great way to report when a node has locked up or become unresponsive. While we have excellent cluster management software, it doesn't provide the kind of historical, behavior-based comparison Datadog uses to automatically report events. For a large job, Email Alerts would mean *not* losing a full weekend of computational time over a hung process; on a typical 20-150 nodes, 72 hours is an enormous amount of wasted resources. Where jobs are generally under a deadline, that time savings could be critical - contracts/bids get missed when jobs like those fail.
 
