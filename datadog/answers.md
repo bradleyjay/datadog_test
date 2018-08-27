@@ -658,9 +658,11 @@ Additionally, I've installed the ```Blinker```library via ```pip install blinker
 
 
 ---
-> *I attempted to use the supplied Flask app at this stage - I ended up getting stuck actually sending trace data from the Flask app's functions to Datadog. I'll discuss why. In the end, I wrote my own script using the ddtrace API to create my own fake "server" app to trace.*
->
-> *I'll first describe what I tried with the Datadog-supplied App, then the app I succeeded with. Please feel free to skip down to the section title "Successful Tracing with a simple ddtrace script" if you'd like to see the working solution right away, instead.*
+
+I attempted to use the supplied Flask app at this stage - I ended up getting stuck actually sending trace data from the Flask app's functions to Datadog. I'll discuss why. In the end, I wrote my own script using the ddtrace API to create my own fake "server" app to trace.
+
+I'll first describe what I tried with the Datadog-supplied App, then the app I succeeded with. Please feel free to skip down to the section title "Successful Tracing with a simple ddtrace script" if you'd like to see the working solution right away, instead.
+
 ---
 
 ## My (unsuccessful) attempt at Tracing with the Datadog-supplied App
@@ -835,7 +837,7 @@ For Infrastructure Metrics, I've included System Bytes Sent vs. Received, and a 
     avg:system.io.util{*}
 
 
-The Timeboard presenting these is linked([here](https://app.datadoghq.com/dash/897139/fakeserver-real-host-timeboard?live=true&page=0&is_auto=false&from_ts=1535098716060&to_ts=1535102316060&tile_size=m&fullscreen=false) and presented below:
+The Timeboard presenting these is linked ([here](https://app.datadoghq.com/dash/897139/fakeserver-real-host-timeboard?live=true&page=0&is_auto=false&from_ts=1535098716060&to_ts=1535102316060&tile_size=m&fullscreen=false) and presented below:
 
 ![Timeboard: APM and Infrastruture Metrics](images/4_5_Timeboard.png)
 
@@ -845,7 +847,7 @@ The Timeboard presenting these is linked([here](https://app.datadoghq.com/dash/8
 
 ## My Answer, Part 3: Service vs. Resources
 
-From a Datadog help [article](https://help.datadoghq.com/hc/en-us/articles/115000702546-What-is-the-Difference-Between-Type-Service-Resource-and-Name-), a **service** is a "set of processes that work together to provide a feature set." I.e., for a web app, one service might be a database, while another handles admin functions, while still another handles the web front end.
+From this Datadog help [article](https://help.datadoghq.com/hc/en-us/articles/115000702546-What-is-the-Difference-Between-Type-Service-Resource-and-Name-), a **service** is a "set of processes that work together to provide a feature set." I.e., for a web app, one service might be a database, while another handles admin functions, while still another handles the web front end.
 
 A **resource** is a "particular query to a service." This could include the literal SQL query for a database, or a route or canonical URL.
 
@@ -861,10 +863,9 @@ A **resource** is a "particular query to a service." This could include the lite
 ## Creative Datadog Use
 ##### Advanced Cluster Management for Cloud-Computing 
 
-Most production scale Computational Fluid Dynamics (CFD) simulations require vast amounts of computational resources, either via a physical compute cluster or a cloud-based high performance computing platform like Rescale (which uses Amazon AWS, a service Datadog plays nicely with). Datadog could provide real insight into the health and status of a running job - runs like those are not cheap.
+Most production-scale Computational Fluid Dynamics (CFD) simulations require vast amounts of computational resources, either via a physical compute cluster or a cloud-based, high performance computing platform like Rescale (which uses Amazon AWS, a service Datadog plays nicely with). Datadog could provide real insight into the health and status of a running job - runs of that size are not cheap, so good monitoring is vital.
 
-For a large job, Email Alerts would mean not losing a full weekend of computational time on 20-150 nodes, a *huge* amount of wasted resources. Where jobs are generally under a deadline, that timesavings could be critical - contracts/bids get missed when jobs like those fail.
+We've seen large jobs receive resources from a cluster management system, then simply sit, using up those resources but not solving the intended job. Other times, when a job has ended, a computational node resource may not release properly, creating an unusable zombie node. On our physical cluster, our cluster administrator fixes those *manually* today by forcing a node restart, despite the size and importance of our cluster's health and efficiency. 
 
-We've seen large jobs receive resources from a cluster management system, then simply sit, using up those resources but not solving the intended job. Other times, when a job has ended, a computational node resource may not release properly, creating an unusable zombie node. On our physical cluster, our cluster administrator fixes those *manually* today by forcing a node restart, despite the size and importance of our cluster's health and efficiency. I'm not sure that's uncommon, unfortunately.
+I'm not sure that's uncommon, unfortunately. Datadog could be a great way to report when a node has locked up or become unresponsive. While we have excellent cluster management software, it doesn't provide the kind of historical, behavior-based comparison Datadog uses to automatically report events. For a large job, Email Alerts would mean *not* losing a full weekend of computational time over a hung process; on a typical 20-150 nodes, 72 hours is an enormous amount of wasted resources. Where jobs are generally under a deadline, that timesavings could be critical - contracts/bids get missed when jobs like those fail.
 
-Datadog could be a great way to report when a node has locked up or become unresponsive. While we have excellent cluster management software, it doesn't provide the kind of historical, behavior-based comparison Datadog uses to automatically report events.
