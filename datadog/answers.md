@@ -351,7 +351,7 @@ This yielded the Timeboard:
 ---
 ## Add a metric from the MySQL Integration, include the anomaly function
 
-With the JSON guide in hand, this part was much easier. The anomaly function was added by simply wrapping the metric in the anomalies() function. Additionally, per the general anomaly monitor [guide](https://docs.datadoghq.com/monitors/monitor_types/anomaly/), I set the anomaly() call to watch for values beyond two standard deviations away from the average CPU time MySQL spends in user space, displayed as a percentage:
+With the JSON guide in hand, this part was much easier. The anomaly function was added by simply wrapping the metric in the anomalies() function. Additionally, per the general anomaly monitor [guide](https://docs.datadoghq.com/monitors/monitor_types/anomaly/), I set the anomalies() call to watch for values beyond two standard deviations away from the average CPU time MySQL spends in user space, displayed as a percentage:
 
 ![Python with Metric2 added](images/2_2_MetricAdded.png)
 
@@ -399,7 +399,7 @@ To pull my Python script from the Vagrant VM, I first installed vagrant-scp (as 
 
 The Python script I used to create this Timeboard is at the path ```etc/datadog-agent/dog/my_first_timeboard.py```, and embedded via link and codeblock, here:
 
-[Python Script for Timeboard: Github Link](pythonScripts/my_first_timeboard.py)
+Python Script for Timeboard: [Github Link](pythonScripts/my_first_timeboard.py)
 
 ```python
 from datadog import initialize, api
