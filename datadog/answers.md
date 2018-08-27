@@ -806,7 +806,7 @@ To build out this example codeblock into something that might report trace data,
 
 ## My Answer, Part 1: Fully-Instrumented "App"
 
-The ```ddtrace.tracer``` class method trace() is called to begin measuring execution time before the random-input sleep command runs, then finish() reports that span back to the Datadog APM. The script was run via ```ddtrace-run python my_fake_server.py``` to collect trace information. The Python script is provided here, and in the github repo [here](pythonScripts/my_fake_server.py):
+The ```ddtrace.tracer``` class method trace() is called to begin measuring execution time before the random-input sleep command runs, then finish() reports that span back to the Datadog APM. The script was run via ```ddtrace-run python my_fake_server.py``` to collect trace information. The Python script is provided below, and in the github repo [here](pythonScripts/my_fake_server.py):
 
 ```python
 from ddtrace import tracer
@@ -858,8 +858,8 @@ A **resource** is a "particular query to a service." This could include the lite
 
 ---
 
-## Creative Datadog Use
-##### Pragmatic Answer: Advanced Cluster Management for Cloud-Computing 
+## What I Would Use Datadog For
+##### Idea 1: Advanced Cluster Management for Cloud-Computing 
 
 Most production-scale Computational Fluid Dynamics (CFD) simulations require vast amounts of computational resources, either via a physical compute cluster or a cloud-based, high performance computing platform like Rescale (which uses Amazon AWS, a service Datadog plays nicely with). Datadog could provide real insight into the health and status of a running job - runs of that size are not cheap, so good monitoring is vital.
 
@@ -867,7 +867,7 @@ We've seen large jobs receive resources from a cluster management system, then s
 
 I'm not sure that's uncommon, unfortunately. Datadog could be a great way to report when a node has locked up or become unresponsive. While we have excellent cluster management software, it doesn't provide the kind of historical, behavior-based comparison Datadog uses to automatically report events. For a large job, Email Alerts would mean *not* losing a full weekend of computational time over a hung process; on a typical run of 20-150 nodes at 8-12 cores each, 72 hours translates to an enormous amount of wasted resources. Where jobs are generally under a deadline, that time savings could be critical - contracts/bids get missed when jobs like those fail.
 
-##### Creative Answer: Disaster Relief
+##### Idea 2: Disaster Relief
 
 A simple app that provided some heartbeat to Datadog at periodic intervals would be lightweight on a smartphone's processor and battery, but could very powerful. A simple interface that allowed the user to send a "Disaster Flag" and then share GPS coordinates could go a long way to helping victims in disaster areas. 
 
