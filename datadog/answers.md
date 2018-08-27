@@ -400,6 +400,7 @@ To pull my Python script from the Vagrant VM, I first installed vagrant-scp (as 
 The Python script I used to create this Timeboard is at the path ```etc/datadog-agent/dog/my_first_timeboard.py```, and embedded via link and codeblock below.
 
 Link to the Timeboard itself: [(link)](https://app.datadoghq.com/dash/894375/my-first-timeboard?live=true&page=0&is_auto=false&from_ts=1535337265597&to_ts=1535340865597&tile_size=m)
+
 Python Script for Timeboard: [Github Link](pythonScripts/my_first_timeboard.py)
 
 ```python
