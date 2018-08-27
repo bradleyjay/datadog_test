@@ -847,7 +847,7 @@ The Timeboard presenting these is linked ([here](https://app.datadoghq.com/dash/
 
 ## My Answer, Part 3: Service vs. Resources
 
-From this Datadog help [article](https://help.datadoghq.com/hc/en-us/articles/115000702546-What-is-the-Difference-Between-Type-Service-Resource-and-Name-), a **service** is a "set of processes that work together to provide a feature set." I.e., for a web app, one service might be a database, while another handles admin functions, while still another handles the web front end.
+From this Datadog help [article](https://help.datadoghq.com/hc/en-us/articles/115000702546-What-is-the-Difference-Between-Type-Service-Resource-and-Name-), a **service** is a "set of processes that work together to provide a feature set." I.e., for a web app, one service might be handle database-related tasks, while another handles admin functions, while still another handles the web front end.
 
 A **resource** is a "particular query to a service." This could include the literal SQL query for a database, or a route or canonical URL.
 
