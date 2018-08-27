@@ -152,13 +152,13 @@ The solution is to grant permissions to the user and use SQL that way (i.e., as 
     mysql> FLUSH PRIVILEGES;
     sudo service mysql restart
 
-Then, ```mysqladmin -u vagrant version``` correctly outputs the version, indicating that our MySQL service is up, running, and user accessible. ```mysql -u vagrant``` can now get us to the MySQL monitor to interact with our MySQL service as necessary.
+Then, ```mysqladmin -u vagrant version``` correctly outputs the version, indicating that the MySQL service is up, running, and user accessible. ```mysql -u vagrant``` then correctly got me to the MySQL monitor to interact with the MySQL service as necessary.
 
 ##### Step 2a: Install the Corresponding Integration for that Database (MySQL) - Preparing MySQL
 
 From the [MySQL Integration Documentation](https://docs.datadoghq.com/integrations/mysql/), MySQL integration comes with the Datadog Agent installation. For configuration, ```conf.d/mysql.d/conf.yaml``` must be edited in the Agent's [configuration directory](https://docs.datadoghq.com/agent/faq/agent-configuration-files/#agent-configuration-directory), which for Linux is ```/etc/datadog-agent/conf.d/```.
 
-Before doing that, the SQL must be prepared by creating a user for Datadog (in actual documentation, I would of course **never** list the password, as I've done here). These commands use @'localhost', which will work for our single host proof of concept:
+Before doing that, the SQL server must be prepared by creating a user for Datadog (in actual documentation, I would of course **never** list the password, as I've done here). These commands use @'localhost', which will work for the single host proof of concept:
 
     vagrant@ubuntu-xenial:/etc/datadog-agent/conf.d$ sudo mysql -u root
     mysql> CREATE USER 'datadog'@'localhost' IDENTIFIED BY 'datadog';
@@ -184,9 +184,9 @@ To enable metric collection from the performance_schema database:
     mysql> show databases like 'performance_schema';
     mysql> GRANT SELECT ON performance_schema.* TO 'datadog'@'localhost';
 
-To start gathering MySQL metrics, some code needs to be added to the config file. However, only the example file ```conf.yaml.example``` exists in ```/etc/datadog-agent/conf.d/mysql.d```, so I copied the example to make my own version via```cp conf.yaml.example conf.yaml```. This creates conf.yaml, but the file belongs to root. Finally, I used ```sudo chown dd-agent:dd-agent conf.yaml``` to change ownership properly to the dd-agent.
+To start gathering MySQL metrics, some code needed to be added to the config file. However, only the example file ```conf.yaml.example``` exists in ```/etc/datadog-agent/conf.d/mysql.d```, so I copied the example to make my own version via```cp conf.yaml.example conf.yaml```. This creates conf.yaml, but the file belongs to root. Finally, I used ```sudo chown dd-agent:dd-agent conf.yaml``` to change ownership properly to the dd-agent.
 
-Now, I can modify to ```mysql.d/conf.yaml```, replacing the commented-out lines in the example with those listed in the documentation (using **sudo vi**, as the file is read-only). My conf.yaml then looks like:
+Next, I modified ```mysql.d/conf.yaml```, replacing the commented-out lines in the example with those listed in the documentation (using **sudo vi**, as the file is read-only). My conf.yaml then looked like:
 
 ![My conf.yaml](images/1_2_SQLMetrics_confYamlFile.png)
 
