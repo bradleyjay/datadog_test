@@ -59,7 +59,7 @@ And confirmed successful access to the VM via ```vagrant ssh```.
 
 ##### Step 2: VM Customization
 
-With our VM up and running, that's great, but the DataDog coding challenge specifically recommends running Ubuntu v.16.04. By default, Vagrant VM boots into Ubuntu 12.04 LTS. Let's change that to ensure our dependencies are in-line for the Datadog Agent.
+With the VM up and running, that's great, but the DataDog coding challenge specifically recommends running Ubuntu v.16.04. By default, Vagrant VM boots into Ubuntu 12.04 LTS. I'll change that to ensure our dependencies are in-line for the Datadog Agent.
 
 Vagrant base images are called "boxes," and cloning one is how a VirtualBox environment is chosen. From the [Box Catalog](https://app.vagrantup.com/boxes/search?page=1&provider=virtualbox&q=ubuntu+16.04&sort=downloads&utf8=%E2%9C%93) I found [Ubuntu 16.04 LTS](https://app.vagrantup.com/ubuntu/boxes/xenial64). Adding the ```config.vm.box``` line to our Vagrantfile like so:
 
@@ -69,7 +69,7 @@ Vagrant base images are called "boxes," and cloning one is how a VirtualBox envi
 
  gave me access to this box. I then commented out the previous ```config.vm.box``` line to deselect Ubuntu 12.04 LTS. This version of the virtual box was already running, so a ```vagrant destroy``` was used to remove that instance of the virtual machine. 
 
- I then ran a ```vagrant up```, which downloaded the new 16.04 LTS box and started our new server. Finally, ```vagrant ssh``` brought me into the new version of the box. Upon launch, there is a message about Ubuntu 18.04.1 LTS being available, but I wanted to use 16.04 LTS unless I find stability or dependency issues. The Ubuntu 16.04 LTS box has *many* more downloads, so the odds seem good that it's a stable release, despite being a daily build.  
+ I then ran a ```vagrant up```, which downloaded the new 16.04 LTS box and started my new server. Finally, ```vagrant ssh``` brought me into the new version of the box. Upon launch, there is a message about Ubuntu 18.04.1 LTS being available, but I wanted to use 16.04 LTS unless I find stability or dependency issues. The Ubuntu 16.04 LTS box has *many* more downloads, so the odds seem good that it's a stable release, despite being a daily build.  
   
 ---
 > *Then, sign up for Datadog (use “Datadog Recruiting Candidate” in the “Company” field), get the Agent reporting metrics from your local machine.*
@@ -77,7 +77,7 @@ Vagrant base images are called "boxes," and cloning one is how a VirtualBox envi
 ## Datadog and Agent Setup
 ##### Step 1: Datadog Signup and Stack Specification
 
-As instructed, I signed up for Datadog as a "Datadog Recruiting Candidate", then informed Datadog about my stack (Python, MySQL, GitHub, Slack). For the Agent Setup, I chose Ubuntu (since we'll be using our VM, not my local macOS), and applied the provided command to our Vagrant box:
+As instructed, I signed up for Datadog as a "Datadog Recruiting Candidate", then informed Datadog about my stack (Python, MySQL, GitHub, Slack). For the Agent Setup, I chose Ubuntu (since we'll be using our VM, not my local macOS), and applied the provided command to my Vagrant box:
 
 ```DD_API_KEY=8677a7b08834961d73c4e0e22dbd6e07 bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent/master/cmd/agent/install_script.sh)"```
 
@@ -93,7 +93,7 @@ After a number of get, unpack, and install calls, the Datadog Agent reported it 
         ```sudo systemctl start datadog-agent```
 
 
-Some useful [Agent Commands - Start, Stop, Restart](https://docs.datadoghq.com/agent/faq/agent-commands/#start-stop-restart-the-agent).
+(Some useful Agent Commands - [Start, Stop, Restart](https://docs.datadoghq.com/agent/faq/agent-commands/#start-stop-restart-the-agent))
 
 
 # Section 1: Collecting Metrics
@@ -106,21 +106,21 @@ Some useful [Agent Commands - Start, Stop, Restart](https://docs.datadoghq.com/a
 At this point, I went to the Datadog [overview](https://docs.datadoghq.com/) documentation, and opened up the Agent section. Selecting [Ubuntu](https://docs.datadoghq.com/agent/basic_agent_usage/ubuntu/) and reading down the page, the Agent config file location is listed. Looking through the Datadog Agent Installer output in my VM terminal window, I could see Agent V6 was installed, not V5. The Agent config file is therefore located at ```/etc/datadog-agent/datadog.yaml```.
 
 ##### Step 2: Add tags to the config file.
-By searching the Datadog Docs documentation for **tags**, I found an [article](https://docs.datadoghq.com/tagging/assigning_tags/) on assigning tags. ["Getting Started With Tags"](https://docs.datadoghq.com/tagging/#tags-best-practices) had some recommendations for useful tags and notes on formatting.
+By searching the Datadog Docs documentation for **tags**, I found an [article](https://docs.datadoghq.com/tagging/assigning_tags/) on assigning tags. ["Getting Started With Tags"](https://docs.datadoghq.com/tagging/#tags-best-practices) had further recommendations for useful tags and notes on formatting.
 
 I attempted to use **vi** to open the datadog.yaml, but was denied due to permissions. **Sudo** let me through. Using **/tags** to find the section on tags, I set the following:
 
     # Set the host's tags (optional)
         tags: machine_name: VagrantVM_Ubuntu1604LTS, region:eastus, env:prod, role:database
 
-*Aside: I notice this mistake later, that there's an extra space between **machine_name:** and **VagrantVM_Ubuntu1604LTS**. When I see the Hostmap in the next step, I do immediately notice that my custom tags aren't there, but decided that there may be another later step that updates the Host's info, after some investigating. After setting up my MySQL integration in the next part of "Collecting Metrics," I realize that's not the case when more information is missing. There's more explanation at that point in this document, as you'll see - please keep reading for now. I came back at that time to replace the above two lines with:*
+*Aside: I notice this mistake later - there's an extra space between **machine_name:** and **VagrantVM_Ubuntu1604LTS**. When I see the Hostmap in the next step, I do immediately notice that my custom tags aren't there, but decided that there may be another later step that updates the Host's info, after some investigating. After setting up my MySQL integration in the next part of "Collecting Metrics," I realize that's not the case when more information is missing. There's more explanation at that point in this document, as you'll see - please keep reading for now. I came back at that time to (correctly) replace the above two lines with:*
 
     # Set the host's tags (optional)
         tags: machine_name:VagrantVM_Ubuntu1604LTS, region:eastus, env:prod, role:database 
 
 
 ##### Step 3: Find Hostmap in Datadog, provide screenshot
-Back in the browser walk-through for setting up Datadog, from my notes on the Datadog 101 - 1 - Overview [video](https://www.youtube.com/watch?v=uI3YN_cnahk) the Hostmap should be in the Sidebar menu. From **Infrastructure > Hostmap**, note the tags present in the right hand of the pane displaying info about our Ubuntu VM host - they match those added in datadog.yaml: 
+Back in the browser walk-through for setting up Datadog, the Datadog 101 - 1 - Overview [video](https://www.youtube.com/watch?v=uI3YN_cnahk) indicates the Hostmap should be in the Sidebar menu. From **Infrastructure > Hostmap**, note the tags present in the right hand of the pane displaying info about our Ubuntu VM host - they match those added in datadog.yaml: 
 
 ![Hostmap with VM, tags](images/1_1_Hostmap.png)
 
@@ -172,7 +172,7 @@ As in the documentation, user creation is verified via:
     echo -e "\033[0;32mMySQL grant - OK\033[0m" || \
     echo -e "\033[0;31mMissing REPLICATION CLIENT grant\033[0m"
 
-Which then yields an "access denied" error, as expected. To grant the necessary replication client privileges, I log in as root (this didn't work when logging into MySQL as Datadog):
+Which then yields an "access denied" error, as expected. To grant the necessary replication client privileges, I logged in as root (this didn't work when logging into MySQL as Datadog):
 
     vagrant@ubuntu-xenial:/etc/datadog-agent/conf.d$ sudo mysql -u root
     mysql> GRANT REPLICATION CLIENT ON *.* TO 'datadog'@'localhost' WITH MAX_USER_CONNECTIONS 5;
@@ -184,16 +184,16 @@ To enable metric collection from the performance_schema database:
     mysql> show databases like 'performance_schema';
     mysql> GRANT SELECT ON performance_schema.* TO 'datadog'@'localhost';
 
-To start gathering MySQL metrics, we need add some code to the config file. However, only the example file conf.yaml.example exists in ```/etc/datadog-agent/conf.d/mysql.d```, so I copied the example to make my own version via```cp conf.yaml.example conf.yaml```. This creates conf.yaml, but the file belongs to root. Finally, I use ```sudo chown dd-agent:dd-agent conf.yaml``` to change ownership properly to the dd-agent.
+To start gathering MySQL metrics, some code needs to be added to the config file. However, only the example file ```conf.yaml.example``` exists in ```/etc/datadog-agent/conf.d/mysql.d```, so I copied the example to make my own version via```cp conf.yaml.example conf.yaml```. This creates conf.yaml, but the file belongs to root. Finally, I use ```sudo chown dd-agent:dd-agent conf.yaml``` to change ownership properly to the dd-agent.
 
-Now, we can modify to ```mysql.d/conf.yaml```, replacing the commented-out lines in the example with those listed in the documentation (using **sudo vi**, as the file is read-only). My conf.yaml then looks like:
+Now, I can modify to ```mysql.d/conf.yaml```, replacing the commented-out lines in the example with those listed in the documentation (using **sudo vi**, as the file is read-only). My conf.yaml then looks like:
 
 ![My conf.yaml](images/1_2_SQLMetrics_confYamlFile.png)
 
 *Aside: After restarting the Agent, I notice in the Datadog dashboard that I can't see my MySQL integration info on my host in Hostmap. I was curious before, when my tags didn't show up in the HostMap, despite being set in my config.yaml file. ```sudo datadog-agent status``` reports that it cannot load the Datadog config file, specifically related to mapping values under the "host tags" section. Opening the config.yaml, I see that I've left an extra space in-between one of my tag key:value pairs. After fixing that, then running ```sudo service datadog-agent start```, and finally the status query again, I can see the Agent is up and running correctly, this time. At this point, I've gone back and updated the HostMap image for my answer under Part 1 of this section, "Collecting Metrics."*
 
 ##### Step 2c: Install the Corresponding Integration for that Database (MySQL) - Allow Agent Communication with MySQL
-With that complete, the final step was to add the MySQL Integration for Datadog in-browser, and allow the Agent to connect to MySQL. Following the MySQL Integration [guide](https://app.datadoghq.com/account/settings#integrations/mysql), the remaining step was to create the conf.d/mysql.yaml file as per:
+With that complete, the final step was to add the MySQL Integration for Datadog in-browser, and allow the Agent to connect to MySQL. Following the MySQL Integration [guide](https://app.datadoghq.com/account/settings#integrations/mysql), the remaining step was to create the ```conf.d/mysql.yaml``` file as per:
 
     init_config:
 
