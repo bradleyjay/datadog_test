@@ -832,12 +832,12 @@ For my APM Metric, I've included the span reported by my ```fake_server``` on th
 
      trace.My_Interval.duration
 
-For Infrastructure Metrics, I've included System Bytes Sent vs. Received, and a measure of System IO utilization averaged over all hosts (i.e. the system, which here is again just ```ubuntu-xenial``` ):
+For Infrastructure Metrics, I've included **System Bytes Sent vs. Received**, and a measure of **System IO Utilization Percentage** averaged over all hosts (i.e. the system, which here is again just ```ubuntu-xenial``` ):
     
     avg:system.io.util{*}
 
 
-The Timeboard presenting these is linked ([here](https://app.datadoghq.com/dash/897139/fakeserver-real-host-timeboard?live=true&page=0&is_auto=false&from_ts=1535098716060&to_ts=1535102316060&tile_size=m&fullscreen=false) and presented below:
+The Timeboard presenting these is linked ([here](https://app.datadoghq.com/dash/897139/fakeserver-real-host-timeboard?live=true&page=0&is_auto=false&from_ts=1535098716060&to_ts=1535102316060&tile_size=m&fullscreen=false)) and presented below:
 
 ![Timeboard: APM and Infrastructure Metrics](images/4_5_Timeboard.png)
 
