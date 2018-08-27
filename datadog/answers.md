@@ -865,12 +865,12 @@ Most production-scale Computational Fluid Dynamics (CFD) simulations require vas
 
 We've seen large jobs receive resources from a cluster management system, then simply sit, using up those resources but not solving the intended job. Other times, when a job has ended, a computational node resource may not release properly, creating an unusable zombie node. On our physical cluster, our cluster administrator fixes those *manually* today by forcing a node restart, despite the size and importance of our cluster's health and efficiency. 
 
-I'm not sure that's uncommon, unfortunately. Datadog could be a great way to report when a node has locked up or become unresponsive. While we have excellent cluster management software, it doesn't provide the kind of historical, behavior-based comparison Datadog uses to automatically report events. For a large job, Email Alerts would mean *not* losing a full weekend of computational time over a hung process; on a typical run of 20-150 nodes at 8-12 cores each, 72 hours translates to an enormous amount of wasted resources. Where jobs are generally under a deadline, that time savings could be critical - contracts/bids get missed when jobs like those fail.
+I'm not sure that's uncommon, unfortunately. Datadog could be a great way to report when a node has locked up or become unresponsive, or a user has made some mistake that causes the job to end immediately after it starts running. While we have excellent cluster management software, it doesn't provide the kind of historical, behavior-based comparison Datadog uses to automatically report events. For a large job, Email Alerts would mean *not* losing a full weekend of computational time over a hung process; on a typical run of 20-150 nodes at 8-12 cores each, 72 hours translates to an enormous amount of wasted resources. Where jobs are generally under a deadline, that time savings could be critical - if a contracts or bid is on the line, it's a very real problem.
 
 ##### Idea 2: Disaster Relief
 
 A simple app that provided some heartbeat to Datadog at periodic intervals would be lightweight on a smartphone's processor and battery, but could very powerful. A simple interface that allowed the user to send a "Disaster Flag" and then share GPS coordinates could go a long way to helping victims in disaster areas. 
 
-This does require an app download and possession of a smartphone, but could combat the surge in phone calls that often drops cell service in disaster zones with much lighter-weight metric reporting.
+This does require an app download and possession of a smartphone, but could allow communciation through the surge in phone calls that often drops cell service in disaster zones with much lighter-weight metric reporting.
 
 Similarly, Datadog could be used to monitor the audio gunshot sensors about New York city, providing fast informatics to police response teams.
