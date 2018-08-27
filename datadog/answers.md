@@ -665,7 +665,7 @@ Additionally, I've installed the ```Blinker```library via ```pip install blinker
 
 ---
 
-## My (unsuccessful) attempt at Tracing with the Datadog-supplied App
+## My first (unsuccessful) attempt at Tracing with the Datadog-supplied App
 ##### Step 1: Prepping the Python Script for Tracing
 
 I wanted to start by setting up the Middleware for Flask, to give myself the choice to use it or not. That way, I could use ```ddtrace``` or manually-included Middleware, depending on what worked. I suspected this part might be difficult.
@@ -674,7 +674,7 @@ To enable manual inclusion of the Middleware for Flask (recommended [here](http:
 
 ##### Step 2: Setting up the Python Script for running with ddtrace
 
-Since the Coding Challenge recommended using only ```ddtrace``` *or* manually-included Middleware, this requires commenting out the Middleware import statement,
+Since the Coding Challenge recommended using only ```ddtrace``` *or* manually-included Middleware, using ```dd-trace``` requires commenting out the Middleware import statement,
 
 ```python
     #from ddtrace.contrib.flask import TraceMiddleware     # TraceMiddleWare import
@@ -729,7 +729,7 @@ if __name__ == '__main__':
 
 ##### Step 3: Moving the Python Script onto Vagrant VM
 
-I moved my local ```my-flask-app.py``` onto my Ubuntu VM by placing it into the same directory as the VM's Vagrantfile (as per this [stackoverflow](https://stackoverflow.com/questions/16704059/easiest-way-to-copy-a-single-file-from-host-to-vagrant-guest)). This file is then automatically available at the path ```/vagrant``` in the Vagrant VM.
+I moved my local ```my-flask-app.py``` onto my Ubuntu VM by placing it into the same directory as the VM's Vagrantfile (as per this [stackoverflow](https://stackoverflow.com/questions/16704059/easiest-way-to-copy-a-single-file-from-host-to-vagrant-guest)). This file is then automatically available at the path ```/vagrant``` within the Vagrant VM.
 
 ##### Step 4: Attempting Tracing
 
@@ -744,9 +744,9 @@ I found consistent errors in the form of:
 
     2018-08-23 07:11:46,050 - ddtrace.writer - ERROR - cannot send services to localhost:8126: [Errno 111] Connection refused
 
-This then became the first goal - obtaining a clean, error-free tracer script run. My troubleshooting process involved working through basic fix attempts to each one of several issues: run command syntax, port communication, and environment variable issues. I wasn't sure what was wrong as I began running the script, so I worked down what I thought were obvious failure modes first.
+This then became the first goal - obtaining a clean, error-free tracer script run. My troubleshooting process involved working through basic fix attempts to each one of several issues: the run command's syntax, port communication, and environment variable issues. I wasn't sure what was wrong as I began running the script, so I worked down what I thought were obvious failure modes first.
 
-I began by double-checking my config settings as a sanity check, and modified settings in ```/etc/datadog-agent/datadog.yaml``` to ensure that the following were uncommented:
+I began by double-checking my config settings as a sanity check, and modified ```/etc/datadog-agent/datadog.yaml``` to ensure that the following were uncommented:
 
     apm_config:
         enabled: true
@@ -755,7 +755,7 @@ I began by double-checking my config settings as a sanity check, and modified se
 
 Then, looking for the error specifically, I explored the documentation. I found a Datadog [article](https://docs.datadoghq.com/tracing/faq/why-am-i-getting-errno-111-connection-refused-errors-in-my-application-logs/) explaining this was the result of the Trace Agent listening somewhere other than expected. That certainly sounded like a port access issue. 
 
-I experimented with ```tracer.configure()```, and changing the ```app.run(host='0.0.0.0',port='5050')``` run command line, trying different host and port combinations. I also explored Vagrant's port forwarding feature ([here)[https://www.vagrantup.com/docs/networking/basic_usage.html], thinking perhaps the tracer was working, but not reaching Datadog:
+I experimented with ```tracer.configure()```, and changing the ```app.run(host='0.0.0.0',port='5050')``` run command line, trying different host and port combinations. I also explored Vagrant's port forwarding feature ([here](https://www.vagrantup.com/docs/networking/basic_usage.html), thinking perhaps the tracer was working, but not reaching Datadog:
 
     config.vm.network :forwarded_port, guest: 4999, host: 4998
 
