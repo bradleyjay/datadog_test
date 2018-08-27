@@ -871,6 +871,8 @@ I'm not sure that's uncommon, unfortunately. Datadog could be a great way to rep
 
 ##### Creative Answer: Disaster Relief
 
-A simple app that provided some heartbeat to Datadog at periodic intervals would be lightweight on a smartphone's processor and battery, but could very powerful. A simple interface that allowed the user to send a "Disaster Flag" and then share GPS coordinates could go a long way to helping victims in disaster areas.
+A simple app that provided some heartbeat to Datadog at periodic intervals would be lightweight on a smartphone's processor and battery, but could very powerful. A simple interface that allowed the user to send a "Disaster Flag" and then share GPS coordinates could go a long way to helping victims in disaster areas. 
+
+This does require an app download and possession of a smartphone, but could combat the surge in phone calls that often drops cell service in disaster zones with much lighter-weight metric reporting.
 
 Similarly, Datadog could be used to monitor the audio gunshot sensors about New York city, providing fast informatics to police response teams.
