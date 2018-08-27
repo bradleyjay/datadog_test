@@ -755,7 +755,7 @@ I began by double-checking my config settings as a sanity check, and modified ``
 
 Then, looking for the error specifically, I explored the documentation. I found a Datadog [article](https://docs.datadoghq.com/tracing/faq/why-am-i-getting-errno-111-connection-refused-errors-in-my-application-logs/) explaining this was the result of the Trace Agent listening somewhere other than expected. That certainly sounded like a port access issue. 
 
-I experimented with ```tracer.configure()```, and changing the ```app.run(host='0.0.0.0',port='5050')``` run command line, trying different host and port combinations. I also explored Vagrant's port forwarding feature ([here](https://www.vagrantup.com/docs/networking/basic_usage.html), thinking perhaps the tracer was working, but not reaching Datadog:
+I experimented with ```tracer.configure()```, and changing the ```app.run(host='0.0.0.0',port='5050')``` run command line, trying different host and port combinations. I also explored Vagrant's port forwarding feature ([here](https://www.vagrantup.com/docs/networking/basic_usage.html)) by modifying the Vagrantfile, thinking perhaps the tracer was working, but not reaching Datadog:
 
     config.vm.network :forwarded_port, guest: 4999, host: 4998
 
@@ -765,7 +765,7 @@ Those didn't seem to fix the issue. I experimented with manually-inserting the M
 
 I found improved results by changing ```ddtrace-run``` by adding environment variable settings in-line with the run command, as per this [guide](https://www.datadoghq.com/blog/monitoring-flask-apps-with-datadog/):
 
-```python
+```
 FLASK_APP=sample_app.py DATADOG_ENV=flask_test ddtrace-run flask run --port=4999
 ```
 
