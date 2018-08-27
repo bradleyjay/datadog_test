@@ -304,7 +304,7 @@ then ran:
 
 I then tested my install via ```dog metric post test_metric 1```, and confirmed that I'd like to create my ```~/.dogrc```.
 
-When asked for my API key, I checked under the Datadog web interface > Integrations > APIs. The API key had been created already, through previous steps. I generated an APP key named my_app_key there, and entered them in response to the dogshell initialization query, which replied "Wrote /home/vagrant/.dogrc" to confirm the file creation.
+When asked for my API key, I checked under the Datadog web interface > Integrations > APIs. The API key had been created already, through previous steps. I generated an APP key named my_app_key there, and entered them in response to the dogshell initialization query, which replied ```Wrote /home/vagrant/.dogrc``` to confirm the file creation.
 
 ##### Step 2: Use Dogshell commands to create a Timeboard
 
@@ -312,15 +312,15 @@ For the command to create my Timeboard, I found the Datadog API [guide](https://
 
 ![Create Timeboard](images/2_0_CreateTimeboard.png)
 
-I placed this into a new folder in /etc/datadog-agent/ to keep things organized. I checked the Timeboard man page via ```dog timeboard -h``` After playing around with possible ```dog timeboard post``` commands, I realized there wasn't a way to feed Dogshell a Python script - those API Python examples are (obviously, now) meant to be run directly in Python to run the ```api.Timeboard.create()``` method at the bottom of the file. I then my Python script via:
+I placed this into a new folder in ```/etc/datadog-agent/``` to keep things organized. I checked the Timeboard man page via ```dog timeboard -h``` After playing around with possible ```dog timeboard post``` commands, I realized there wasn't a way to feed Dogshell a Python script - those API Python examples are (obviously, now) meant to be run directly in Python to run the ```api.Timeboard.create()``` method at the bottom of the file. I then my Python script via:
 
     python my_first_timeboard.py
 
-In the Datadog web interface > Dashboards, I now see "My First Timeboard" on the list: 
+In the Datadog web interface > Dashboards, I could then see "My First Timeboard" on the list: 
 
 ![Dashboard List](images/2_0_DashboardList.png)
 
-and clicking on it, that it contains our example metric (Average Memory Free):
+and clicking on it, that it contained the example metric (Average Memory Free):
 
 ![My First Timeboard](images/2_0_MyFirstTimeboard.png)
 
@@ -331,7 +331,7 @@ and clicking on it, that it contains our example metric (Average Memory Free):
 
 ## Add your custom metric scoped over your host to the Timeboard
 
-From my example Timeboard, I'll start building each feature that will get added to the Timeboard by our ```api.Timeboard.create()``` call, as a graph. I did try implementing this first as a call to send metrics directly via api.Metric.send() (detailed [here](https://docs.datadoghq.com/api/?lang=python#post-time-series-points)), but while that made the metric available on Datadog for my localhost, it didn't generate the graph as I intended. As I'm testing syntax, I'm deleting incorrect Timeboards via the command
+From my example Timeboard, I started building each feature that would be added to the Timeboard by the ```api.Timeboard.create()``` call, as a graph. I did try implementing this first as a call to send metrics directly via api.Metric.send() (detailed [here](https://docs.datadoghq.com/api/?lang=python#post-time-series-points)), but while that made the metric available on Datadog for my localhost, it didn't generate the graph as I intended. As I tested syntax, I deleted incorrect Timeboards via the command
 
     dog timeboard show_all
     dog timeboard delete <timeboard id>
@@ -340,7 +340,7 @@ I was able to correctly graph my_metric: under the **arguments** listed for Crea
 
 ![Python with Metric added](images/2_1_MetricAdded.png)
 
-This yields the Timeboard:
+This yielded the Timeboard:
 
 ![Timeboard with Metric added](images/2_1_Timeboard.png)
 
@@ -351,11 +351,11 @@ This yields the Timeboard:
 ---
 ## Add a metric from the MySQL Integration, include the anomaly function
 
-With the JSON guide in hand, this part is much easier. The anomaly function is added as simply wrapping the metric in the anomalies() function. Additionally, per the general anomaly monitor [guide](https://docs.datadoghq.com/monitors/monitor_types/anomaly/), I'll watch for values beyond two standard deviations from usual percentage of CPU time MySQL spends in user space:
+With the JSON guide in hand, this part was much easier. The anomaly function was added by simply wrapping the metric in the anomalies() function. Additionally, per the general anomaly monitor [guide](https://docs.datadoghq.com/monitors/monitor_types/anomaly/), I set the anomaly() call to watch for values beyond two standard deviations away from the average CPU time MySQL spends in user space, displayed as a percentage:
 
 ![Python with Metric2 added](images/2_2_MetricAdded.png)
 
-And the Timeboard,
+And visually, the Timeboard,
 
 ![Timeboard with Metric2 added](images/2_2_Timeboard.png)
 
@@ -369,13 +369,13 @@ And the Timeboard,
 
 Aggregate and rollup are covered in this [guide](https://docs.datadoghq.com/graphing/#aggregate-and-rollup). 
 
-**I tried (incorrectly):** Since previously I modified my_metric.yaml located at ```/etc/datadog-agent/conf.d``` to collect my_metric at (at minimum) 45 second intervals, to rollup data over the last hour, that's 80 points we need (3600 seconds * (1 data point/45 seconds)). I added another graph to plot the query ```"q": "my_metric{host:ubuntu-xenial}.rollup(sum,80)"```.
+**I tried (incorrectly):** Since previously I modified ```my_metric.yaml``` located at ```/etc/datadog-agent/conf.d``` to collect ```my_metric``` in (at minimum) 45 second intervals, to rollup data over the last hour, that's 80 points required (3600 seconds * (1 data point/45 seconds)). I added another graph to plot the query ```"q": "my_metric{host:ubuntu-xenial}.rollup(sum,80)"```.
 
 **Correct way**: That's not quite right - the graph output looked far too low. The '80' value is *not* point count, it's time in seconds. As per the [documentation](https://docs.datadoghq.com/graphing/miscellaneous/functions/) on .rollup,
 
 >The function takes two parameters: method and time: .rollup(method,time). The method can be sum/min/max/count/avg and time is in seconds. You can use either one individually, or both together like .rollup(sum,120).
 
-So instead, I've implemented a graph to plot the query ```"q": "my_metric{host:ubuntu-xenial}.rollup(sum,3600)"``` as an aggregate sum of the last 3600 seconds (one hour) of my_metric values:
+So instead, I implemented a graph to plot the query ```"q": "my_metric{host:ubuntu-xenial}.rollup(sum,3600)"``` as an aggregate sum of the last 3600 seconds (one hour) of my_metric values:
 
 
 ![Python with Metric3 added](images/2_3_MetricAdded.png)
@@ -467,7 +467,7 @@ api.Timeboard.create(title=title,
 ---
  
 ## Modify the Timeboard: Set the timeframe to the past 5 minutes
-By selecting the last sliver of time on any graph using the mouse, the last five minutes are selected (as far as I can tell, that's the minimum displayable window): 
+By selecting the last sliver of time on any graph using my mouse, the last five minutes are selected (as far as I can tell, that's the minimum displayable window): 
 
 ![UI Selection of last 5 minutes in timeBoard](images/2_4_Last5Min_InUI.png)
 
@@ -491,7 +491,7 @@ And there it is, in my gmail:
 ## What is the Anomaly graph displaying?
 Generally, an [anomaly](https://docs.datadoghq.com/monitors/monitor_types/anomaly/) uses algorithmic detection to compare a metric to it's past values, and can be configured to use historical data as well (time of day, day of the week patterns, and so on).
 
-The Anomaly graph here is displaying a region on either side of the current value of the reported metric. This represents the range of values within a set number (2, here) of standard deviations of the mean value, taken over some number of seconds set by a default rollup value, explained [here]([rollup](https://docs.datadoghq.com/monitors/monitor_types/anomaly/)), but I'm not sure what that default is. Because I've chosen the 'basic' algorithm, the anomaly is calculated with a "simple lagging quantile computation," i.e. no seasonal/longer term trend data.
+The Anomaly graph here is displaying the current value of the MySQL CPU time metric, and a region on either side of the current value of the reported metric. This represents the range of values within a set number (2, here) of standard deviations of the mean value, taken over some number of seconds set by a default rollup value, explained [here]([rollup](https://docs.datadoghq.com/monitors/monitor_types/anomaly/)), but I'm not sure what that default value is. Because I've chosen the 'basic' algorithm, the anomaly is calculated with a "simple lagging quantile computation," i.e. no seasonal/longer term trend data.
 
 
 # Section 3: Monitoring Data
@@ -523,7 +523,7 @@ To create a Metric Monitor ([documentation](https://docs.datadoghq.com/monitors/
 
 I configured the monitor's message to respond to Alerts, Warnings, and No Data events. Additionally, the monitor will email me when the threshold reaches a Warning or Alert.
 
-To configure the monitor's message, I referenced the *Use message template variables*  help under that same "Say what's happening" section. The documentation for notifications [documentation](https://docs.datadoghq.com/monitors/notifications/) provided helpful syntax as well. The ```Notify: @bradleyjshields@gmail.com``` also adds my email to the "Notify your team section." The monitor's message is:
+To configure the monitor's message, I referenced the *Use message template variables*  help under that same "Say what's happening" section. The documentation for [notifications](https://docs.datadoghq.com/monitors/notifications/) provided helpful syntax as well. The ```Notify: @bradleyjshields@gmail.com``` also adds my email to the "Notify your team section." The monitor's message is:
 
 ```
 {{#is_alert}} 

@@ -687,3 +687,26 @@ ubuntu-xenial login: [ 3695.393610] e1000 0000:00:03.0 enp0s3: Detected Tx Unit 
 [ 7079.845601]   jiffies              <10019da28>
 [ 7079.845601]   next_to_watch.status <0>
 [ 7080.663007] e1000 0000:00:03.0 enp0s3: Reset adapter
+[81202.482515] e1000 0000:00:03.0 enp0s3: Detected Tx Unit Hang
+[81202.482515]   Tx Queue             <0>
+[81202.482515]   TDH                  <88>
+[81202.482515]   TDT                  <8a>
+[81202.482515]   next_to_use          <8a>
+[81202.482515]   next_to_clean        <88>
+[81202.482515] buffer_info[next_to_clean]
+[81202.482515]   time_stamp           <10134a8b6>
+[81202.482515]   next_to_watch        <89>
+[81202.482515]   jiffies              <10134abf6>
+[81202.482515]   next_to_watch.status <0>
+[81204.576192] e1000 0000:00:03.0 enp0s3: Detected Tx Unit Hang
+[81204.576192]   Tx Queue             <0>
+[81204.576192]   TDH                  <88>
+[81204.576192]   TDT                  <8a>
+[81204.576192]   next_to_use          <8a>
+[81204.576192]   next_to_clean        <88>
+[81204.576192] buffer_info[next_to_clean]
+[81204.576192]   time_stamp           <10134a8b6>
+[81204.576192]   next_to_watch        <89>
+[81204.576192]   jiffies              <10134ae02>
+[81204.576192]   next_to_watch.status <0>
+[81205.848258] e1000 0000:00:03.0 enp0s3: Reset adapter
