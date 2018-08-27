@@ -773,11 +773,11 @@ These led me to a place where the trace ran, and provided output such as:
 
 ![Questionable Tracing](images/QuestionableTrace.png)
 
-This looked promising. However, the APM section of Datadog's web browser UI didn't report any trace from a service. 
+While promising, the APM section of Datadog's web browser UI didn't report any trace from a service. 
 
 ##### Step 6: Taking stock of the problem so far
 
-At this point, I wasn't sure if the issue was Vagrant's connectivity back to Datadog. However, after Port Forwarding didn't fix the issue, and knowing that other metrics were reaching Datadog (from previous sections of the Challenge), I suspected the issue most likely had to do with Flask. However, that still left the possibility that traces weren't being properly recorded, on top of connectivity issues, which could even be between Flask/Vagrant VM/my Macbook's port handling.
+At this point, I took a step back. I wasn't sure if the issue was Vagrant's connectivity back to Datadog. However, after Port Forwarding didn't fix the issue, and knowing that other metrics were reaching Datadog (from previous sections of the Challenge), I suspected the issue most likely had to do with Flask. However, that still left the possibility that traces weren't being properly recorded, on top of connectivity issues, which could even be between Flask/Vagrant VM/my Macbook's port handling.
 
 I had already explored Flask's documentation throughout this process, and decided that I was troubleshooting several things at once, potentially. The best course of action, I felt, was to build something simple from a base example instead. Building a test case that isolates a single issue is a technique I like, when possible.
 
@@ -808,7 +808,7 @@ To build out this example codeblock into something that might report trace data,
 
 ## My Answer, Part 1: Fully-Instrumented "App"
 
-The ```ddtrace.tracer``` class method trace() is called to begin measuring execution time before the random-input sleep command runs, then finish() reports that span back to the Datadog APM. The script was run via ```ddtrace-run python my_fake_server.py``` to collect trace information. The Python script is provided here, and in the github repo [here](pythonScripts/my_fake_server.py)
+The ```ddtrace.tracer``` class method trace() is called to begin measuring execution time before the random-input sleep command runs, then finish() reports that span back to the Datadog APM. The script was run via ```ddtrace-run python my_fake_server.py``` to collect trace information. The Python script is provided here, and in the github repo [here](pythonScripts/my_fake_server.py):
 
 ```python
 from ddtrace import tracer
