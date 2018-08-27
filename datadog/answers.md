@@ -798,9 +798,9 @@ and found that it actually *did* report data back to Datadog in the Datadog UI >
 To build out this example codeblock into something that might report trace data, I used the ddtrace API [guide](http://pypi.datadoghq.com/trace/docs/#module-ddtrace.contrib.flask). I realized that a sleep() command run with a random integer input could work as a varying but straightforward metric to trace. Wrapping that in a ```while True:``` loop, I had a process that would run continuously, and report a trace at random intervals.
 
 ---
-> Note: These are answered a little out of order, to make my thought process easier to read through. First, I show the Python "app" I use, then the Dashboard with APM and Infrastructure Metrics, then the Bonus Question answer.
+Note: These are answered a little out of order, to make my thought process easier to read through. First, I show the Python "app" I use, then the Dashboard with APM and Infrastructure Metrics, then the Bonus Question answer.
 
-*Please include your fully instrumented app in your submission, as well.*
+> *Please include your fully instrumented app in your submission, as well.*
 
 ---
 
