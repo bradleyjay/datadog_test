@@ -658,9 +658,9 @@ Additionally, I've installed the ```Blinker```library via ```pip install blinker
 
 
 ---
-### I attempted to use the supplied Flask app at this stage - I ended up getting stuck actually sending trace data from the Flask app's functions to Datadog. I'll discuss why. In the end, I wrote my own script using the ddtrace API to create my own fake "server" app to trace.
+## I attempted to use the supplied Flask app at this stage - I ended up getting stuck actually sending trace data from the Flask app's functions to Datadog. I'll discuss why. In the end, I wrote my own script using the ddtrace API to create my own fake "server" app to trace.
 
-### I'll first describe what I tried with the Datadog-supplied App, then the app I succeeded with. Please feel free to skip down to the section title "Successful Tracing with a simple ddtrace script" if you'd like to see the working solution right away, instead.
+## I'll first describe what I tried with the Datadog-supplied App, then the app I succeeded with. Please feel free to skip down to the section title "Successful Tracing with a simple ddtrace script" if you'd like to see the working solution right away, instead.
 ---
 
 ## My first (unsuccessful) attempt at Tracing with the Datadog-supplied App
